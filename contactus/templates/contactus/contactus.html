@@ -1,0 +1,196 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bee House - Contact Us</title>
+    <link rel="stylesheet" type="text/CSS" href="{% static 'CSS/profile-page_stylesheet.css' %}"/>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
+    <link rel="stylesheet" href="{% static 'CSS/mobile.css' %}">
+    <style>
+        /* Alert Messages */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin: 2rem auto;
+            max-width: 800px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #dc2626;
+        }
+
+        .alert::before {
+            font-size: 1.5rem;
+        }
+
+        .alert-success::before {
+            content: "✓";
+        }
+
+        .alert-error::before {
+            content: "✗";
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><img class="beelogo" src="{% static 'Images/BEEBLACK.png' %}"></div>
+        <section class="nav-bar">
+            <ol>
+                <li><a href="{% url 'home:home_page' %}"><button class="nav-bar-button">Home</button></a></li>
+                <li><a href="{% url 'products:product_page' %}"><button class="nav-bar-button">Products</button></a></li>
+                <li><a href="{% url 'contactus:contact' %}"><button class="nav-bar-button">Contact-us</button></a></li>
+            </ol>
+            <div class="profile">
+                <a href="{% url 'users:profile' %}">
+                    <img src="{% static 'Images/user_icon-profile.png' %}" alt="user-profile" class="user-profile">
+                </a>
+            </div>
+        </section>
+    </div>
+    <div class="divider"></div>
+
+    <!-- Success/Error Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <section class="contact-section" id="contact">
+        <div class="contact-container">
+            <div class="contact-header">
+                <h2>Contact Us</h2>
+                <p>اتصل بنا | Contactez-nous | Get in Touch</p>
+            </div>
+            
+            <div class="contact-content">
+                <!-- Contact Information -->
+                <div class="contact-info">
+                    <h3>Get In Touch</h3>
+                    <p>We'd love to hear from you! Reach out with any questions about our honey products.</p>
+                    
+                    <div class="info-item">
+                        <img src="{% static 'Images/location-icon.png' %}" alt="Location" class="info-icon">
+                        <div>
+                            <h4>Address</h4>
+                            <p>Saint Jules, Mostaganem</p>
+                            <p>مستغانم/saint jules</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <img src="{% static 'Images/phone-icon.png' %}" alt="Phone" class="info-icon">
+                        <div>
+                            <h4>Phone</h4>
+                            <p>+213 XXX XXX XXX</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <img src="{% static 'Images/email-icon.png' %}" alt="Email" class="info-icon">
+                        <div>
+                            <h4>Email</h4>
+                            <p>info@beehouse.dz</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <img src="{% static 'Images/clock-icon.png' %}" alt="Hours" class="info-icon">
+                        <div>
+                            <h4>Business Hours</h4>
+                            <p>Saturday - Thursday: 9:00 - 18:30</p>
+                            <p>Friday: Closed</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Form -->
+                <div class="contact-form-wrapper">
+                    <h3>Send Us a Message</h3>
+                    <form class="contact-form" method="POST" action="{% url 'contactus:contact' %}">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="name">Full Name *</label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                name="name" 
+                                required 
+                                placeholder="Your name"
+                                value="{{ request.POST.name }}"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                name="phone" 
+                                placeholder="+213 XXX XXX XXX"
+                                value="{{ request.POST.phone }}"
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Subject *</label>
+                            <select id="subject" name="subject" required>
+                                <option value="">Select a subject</option>
+                                <option value="product" {% if request.POST.subject == 'product' %}selected{% endif %}>Product Inquiry</option>
+                                <option value="order" {% if request.POST.subject == 'order' %}selected{% endif %}>Order Status</option>
+                                <option value="wholesale" {% if request.POST.subject == 'wholesale' %}selected{% endif %}>Wholesale Inquiry</option>
+                                <option value="feedback" {% if request.POST.subject == 'feedback' %}selected{% endif %}>Feedback</option>
+                                <option value="other" {% if request.POST.subject == 'other' %}selected{% endif %}>Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Message *</label>
+                            <textarea 
+                                id="message" 
+                                name="message" 
+                                rows="5" 
+                                required 
+                                placeholder="How can we help you?"
+                            >{{ request.POST.message }}</textarea>
+                        </div>
+                        
+                        <button type="submit" class="submit-button">Send Message 🐝</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
