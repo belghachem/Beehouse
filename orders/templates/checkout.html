@@ -1,0 +1,272 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Bee House</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'CSS/prodect-page-stylesheet.css' %}">
+    <link rel="stylesheet" href="{% static 'CSS/checkout.css' %}">
+    <link rel="stylesheet" href="{% static 'CSS/mobile.css' %}">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo"><img class="beelogo" src="{% static 'Images/BEEBLACK.png' %}"></div>
+        <section class="nav-bar">
+            <ol>
+                <li><a href="{% url 'home:home_page' %}"><button class="nav-bar-button">Home</button></a></li>
+                <li><a href="{% url 'products:product_page' %}"><button class="nav-bar-button">Products</button></a></li>
+                <li><a href="{% url 'contactus:contact' %}"><button class="nav-bar-button">Contact-us</button></a></li>
+            </ol>
+            <div class="profile">
+                <div class="cart-icon-container">
+                    <a href="{% url 'cart:view_cart' %}">
+                        <img src="{% static 'Images/cart-icon.png' %}" alt="shopping cart" class="cart-icon">
+                    </a>
+                </div>
+                <a href="{% url 'users:profile' %}">
+                    <img src="{% static 'Images/user_icon-profile.png' %}" alt="user-profile" class="user-profile">
+                </a>
+            </div>
+        </section>
+    </div>
+    <div class="divider"></div>
+
+    <!-- Checkout Container -->
+    <div class="checkout-container">
+        <div class="checkout-header">
+            <h1>🛒 Checkout</h1>
+            <p>Complete your order information</p>
+        </div>
+
+        <!-- Shipping Information Form -->
+        <div class="section">
+            <h2>📦 Shipping Information</h2>
+            <form method="POST" action="{% url 'orders:place_order' %}" id="checkoutForm">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="full_name">Full Name *</label>
+                    <input type="text" id="full_name" name="full_name" 
+                           value="{% if profile %}{{ profile.user.first_name }} {{ profile.user.last_name }}{% endif %}" 
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" 
+                           value="{% if profile %}{{ profile.phone }}{% endif %}" 
+                           placeholder="+213 XXX XXX XXX" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="wilaya">Wilaya *</label>
+                    <select id="wilaya" name="wilaya" required onchange="updateShippingCost()">
+                        <option value="">Select Wilaya</option>
+                        <option value="Adrar">Adrar</option>
+                        <option value="Chlef">Chlef</option>
+                        <option value="Laghouat">Laghouat</option>
+                        <option value="Oum El Bouaghi">Oum El Bouaghi</option>
+                        <option value="Batna">Batna</option>
+                        <option value="Béjaïa">Béjaïa</option>
+                        <option value="Biskra">Biskra</option>
+                        <option value="Béchar">Béchar</option>
+                        <option value="Blida">Blida</option>
+                        <option value="Bouira">Bouira</option>
+                        <option value="Tamanrasset">Tamanrasset</option>
+                        <option value="Tébessa">Tébessa</option>
+                        <option value="Tlemcen">Tlemcen</option>
+                        <option value="Tiaret">Tiaret</option>
+                        <option value="Tizi Ouzou">Tizi Ouzou</option>
+                        <option value="Alger">Alger</option>
+                        <option value="Djelfa">Djelfa</option>
+                        <option value="Jijel">Jijel</option>
+                        <option value="Sétif">Sétif</option>
+                        <option value="Saida">Saida</option>
+                        <option value="Skikda">Skikda</option>
+                        <option value="Sidi Bel Abbès">Sidi Bel Abbès</option>
+                        <option value="Annaba">Annaba</option>
+                        <option value="Guelma">Guelma</option>
+                        <option value="Constantine">Constantine</option>
+                        <option value="Médéa">Médéa</option>
+                        <option value="Mostaganem">Mostaganem</option>
+                        <option value="M'Sila">M'Sila</option>
+                        <option value="Mascara">Mascara</option>
+                        <option value="Ouargla">Ouargla</option>
+                        <option value="Oran">Oran</option>
+                        <option value="El Bayadh">El Bayadh</option>
+                        <option value="Illizi">Illizi</option>
+                        <option value="Bordj Bou Arréridj">Bordj Bou Arréridj</option>
+                        <option value="Boumerdès">Boumerdès</option>
+                        <option value="El Tarf">El Tarf</option>
+                        <option value="Tindouf">Tindouf</option>
+                        <option value="Tissemsilt">Tissemsilt</option>
+                        <option value="El Oued">El Oued</option>
+                        <option value="Khenchela">Khenchela</option>
+                        <option value="Souk Ahras">Souk Ahras</option>
+                        <option value="Tipaza">Tipaza</option>
+                        <option value="Mila">Mila</option>
+                        <option value="Aïn Defla">Aïn Defla</option>
+                        <option value="Naâma">Naâma</option>
+                        <option value="Aïn Témouchent">Aïn Témouchent</option>
+                        <option value="Ghardaïa">Ghardaïa</option>
+                        <option value="Relizane">Relizane</option>
+                        <option value="Timimoun">Timimoun</option>
+                        <option value="Bordj Badji Mokhtar">Bordj Badji Mokhtar</option>
+                        <option value="Ouled Djellal">Ouled Djellal</option>
+                        <option value="Béni Abbès">Béni Abbès</option>
+                        <option value="In Salah">In Salah</option>
+                        <option value="In Guezzam">In Guezzam</option>
+                        <option value="Touggourt">Touggourt</option>
+                        <option value="Djanet">Djanet</option>
+                        <option value="El M'Ghair">El M'Ghair</option>
+                        <option value="El Meniaa">El Meniaa</option>
+                    </select>
+                </div>
+
+                <!-- Delivery Method -->
+                <div class="form-group">
+                    <label>Delivery Method *</label>
+                    <div class="delivery-options">
+                        <div class="delivery-option">
+                            <input type="radio" id="home_delivery" name="delivery_type" value="home" checked onchange="handleDeliveryChange()">
+                            <label for="home_delivery">
+                                <span class="icon">🏠</span>
+                                <span class="title">Home Delivery</span>
+                                <span class="price" id="home-price">Select wilaya</span>
+                            </label>
+                        </div>
+                        <div class="delivery-option">
+                            <input type="radio" id="stop_desk" name="delivery_type" value="stop_desk" onchange="handleDeliveryChange()">
+                            <label for="stop_desk">
+                                <span class="icon">🏢</span>
+                                <span class="title">Stop Desk Pickup</span>
+                                <span class="price" id="stop-price">Cheaper!</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Fields (shown for home delivery) -->
+                <div id="home-address-fields">
+                    <div class="form-group">
+                        <label for="city">City/Commune *</label>
+                        <input type="text" id="city" name="city" 
+                               value="{% if profile %}{{ profile.city }}{% endif %}" 
+                               placeholder="e.g., Oran, Sétif">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Detailed Address *</label>
+                        <textarea id="address" name="address" 
+                                  placeholder="Street, building number, floor, etc.">{% if profile %}{{ profile.address }}{% endif %}</textarea>
+                    </div>
+
+                    <!-- Map Section -->
+                    <div class="map-instructions">
+                        📍 <strong>Click on the map to select your exact location</strong> - This helps our delivery team find you easily!
+                    </div>
+                    <div id="map"></div>
+                </div>
+
+                <!-- Stop Desk Selection (shown for stop desk option) -->
+                <div id="stop-desk-fields" style="display: none;">
+                    <div class="map-instructions">
+                        🏢 <strong>Select your nearest Stop Desk</strong> - Click on a marker to choose your pickup location
+                    </div>
+                    <div id="map-stop-desk"></div>
+                    
+                    <div class="stop-desk-info" id="selected-stop-desk">
+                        <h4>Selected Stop Desk</h4>
+                        <div class="stop-desk-detail">
+                            <strong>📍 Name:</strong>
+                            <span id="desk-name"></span>
+                        </div>
+                        <div class="stop-desk-detail">
+                            <strong>📫 Address:</strong>
+                            <span id="desk-address"></span>
+                        </div>
+                        <div class="stop-desk-detail">
+                            <strong>📞 Phone:</strong>
+                            <span id="desk-phone"></span>
+                        </div>
+                        <div class="stop-desk-detail">
+                            <strong>🕒 Hours:</strong>
+                            <span id="desk-hours"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hidden fields -->
+                <input type="hidden" id="latitude" name="latitude">
+                <input type="hidden" id="longitude" name="longitude">
+                <input type="hidden" id="shipping_cost" name="shipping_cost" value="0">
+                <input type="hidden" id="stop_desk_id" name="stop_desk_id" value="">
+            </form>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="section">
+            <h2>📋 Order Summary</h2>
+            
+            {% for item in cart_items %}
+            <div class="order-item">
+                <div class="item-info">
+                    <div class="item-name">{{ item.product.name }}</div>
+                    <div class="item-quantity">Quantity: {{ item.quantity }}</div>
+                </div>
+                <div class="item-price">{{ item.get_total_price }} DZD</div>
+            </div>
+            {% endfor %}
+
+            <div class="order-total">
+                <div class="total-row">
+                    <span>Products Subtotal:</span>
+                    <span id="subtotal-display">{{ total }} DZD</span>
+                </div>
+                <div class="total-row">
+                    <span>Shipping Cost:</span>
+                    <span id="shipping-cost-display" style="color: #10b981; font-weight: 600;">Select wilaya</span>
+                </div>
+                <div class="total-row grand">
+                    <span>Grand Total:</span>
+                    <span id="grand-total-display">{{ total }} DZD</span>
+                </div>
+            </div>
+
+            <div class="payment-info">
+                <p>💵 Payment Method: Cash on Delivery (COD)</p>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-group">
+            <a href="{% url 'cart:view_cart' %}" class="btn btn-secondary">← Back to Cart</a>
+            <button type="submit" form="checkoutForm" class="btn btn-primary">Place Order 🚀</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+
+    <!-- Pass stop desks data to JavaScript -->
+    <script>
+        window.stopDesksData = {{ stop_desks_json|safe }};
+    </script>
+
+    <!-- Checkout Logic -->
+    <script src="{% static 'JS/checkout.js' %}"></script>
+</body>
+</html>

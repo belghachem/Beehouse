@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order #{{ order.id }} - Invoice</title>
+    <meta charset="utf-8">
+    <style>
+        @media print {
+            .no-print {
+                display: none;
+            }
+            body {
+                margin: 0;
+                padding: 20px;
+            }
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: white;
+        }
+        
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 2px solid #333;
+            padding: 30px;
+        }
+        
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #f59e0b;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .company-info h1 {
+            color: #f59e0b;
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        
+        .company-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .invoice-number {
+            text-align: right;
+        }
+        
+        .invoice-number h2 {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .invoice-number p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .customer-info {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .customer-info h3 {
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f59e0b;
+            padding-bottom: 10px;
+        }
+        
+        .info-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            width: 150px;
+            color: #555;
+        }
+        
+        .info-value {
+            color: #333;
+            flex: 1;
+        }
+        
+        .order-items {
+            margin: 30px 0;
+        }
+        
+        .order-items h3 {
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f59e0b;
+            padding-bottom: 10px;
+        }
+        
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .items-table thead {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .items-table th,
+        .items-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .items-table th {
+            font-weight: 600;
+        }
+        
+        .items-table tbody tr:hover {
+            background: #fef3c7;
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        .order-total {
+            margin-top: 30px;
+            text-align: right;
+        }
+        
+        .total-row {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px 0;
+            font-size: 1.1rem;
+        }
+        
+        .total-row.grand-total {
+            border-top: 3px solid #f59e0b;
+            padding-top: 15px;
+            margin-top: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #f59e0b;
+        }
+        
+        .total-label {
+            width: 200px;
+            text-align: right;
+            margin-right: 30px;
+            font-weight: 600;
+        }
+        
+        .total-value {
+            width: 150px;
+            text-align: right;
+        }
+        
+        .payment-info {
+            background: #fef3c7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .payment-info strong {
+            color: #92400e;
+            font-size: 1.1rem;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-processing { background: #dbeafe; color: #1e40af; }
+        .status-shipped { background: #d1fae5; color: #065f46; }
+        .status-delivered { background: #d1fae5; color: #047857; }
+        .status-cancelled { background: #fee2e2; color: #991b1b; }
+        
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background: #f59e0b;
+            color: black;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .print-button:hover {
+            background: #d97706;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="window.print()" class="print-button no-print">🖨️ Print Invoice</button>
+    
+    <div class="invoice-container">
+        <!-- Header -->
+        <div class="invoice-header">
+            <div class="company-info">
+                <h1>🐝 Bee House</h1>
+                <p>Premium Honey Products</p>
+                <p>Algeria</p>
+            </div>
+            <div class="invoice-number">
+                <h2>INVOICE</h2>
+                <p><strong>Order #{{ order.id }}</strong></p>
+                <p>{{ order.created_at|date:"F d, Y" }}</p>
+                <p><span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span></p>
+            </div>
+        </div>
+        
+        <!-- Customer Information -->
+        <div class="customer-info">
+            <h3>📋 Customer Information</h3>
+            <div class="info-row">
+                <div class="info-label">Customer Name:</div>
+                <div class="info-value">{{ order.full_name }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Username:</div>
+                <div class="info-value">{{ order.user.username }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Phone:</div>
+                <div class="info-value">{{ order.phone }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Address:</div>
+                <div class="info-value">{{ order.address }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">City:</div>
+                <div class="info-value">{{ order.city }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Delivery Method:</div>
+                <div class="info-value">{{ order.get_delivery_type_display }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Wilaya:</div>
+                <div class="info-value">{{ order.wilaya }}</div>
+            </div>
+            {% if order.latitude and order.longitude %}
+            <div class="info-row">
+                <div class="info-label">GPS Coordinates:</div>
+                <div class="info-value">{{ order.latitude }}, {{ order.longitude }}</div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Order Items -->
+        <div class="order-items">
+            <h3>📦 Order Items</h3>
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th class="text-right">Price</th>
+                        <th class="text-right">Quantity</th>
+                        <th class="text-right">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td class="text-right">{{ item.price }} DZD</td>
+                        <td class="text-right">{{ item.quantity }}</td>
+                        <td class="text-right">{{ item.get_total_price }} DZD</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Order Total -->
+        <div class="order-total">
+            <div class="total-row">
+                <div class="total-label">Subtotal (Products):</div>
+                <div class="total-value">{{ order.subtotal }} DZD</div>
+            </div>
+            <div class="total-row">
+                <div class="total-label">Shipping Cost:</div>
+                <div class="total-value">{{ order.shipping_cost }} DZD</div>
+            </div>
+            <div class="total-row grand-total">
+                <div class="total-label">Grand Total:</div>
+                <div class="total-value">{{ order.total_price }} DZD</div>
+            </div>
+        </div>
+        
+        <!-- Payment Information -->
+        <div class="payment-info">
+            <strong>💵 Payment Method: Cash on Delivery (COD)</strong>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>Thank you for your business!</p>
+            <p>For any questions, contact us at support@beehouse.dz</p>
+        </div>
+    </div>
+    
+    <script>
+        // Auto-print when page loads (optional)
+        // window.onload = function() { window.print(); }
+    </script>
+</body>
+</html>

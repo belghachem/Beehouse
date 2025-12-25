@@ -1,0 +1,126 @@
+{% load static %}   
+<!DOCTYPE html>
+		<html lang="en">
+			<head>
+				<title>{% block title %}BEE HOUSE{% endblock %}</title>
+				<link rel="stylesheet" type="text/CSS" href=" {% static 'CSS/main_menu_bee_house_staylesheet.css' %}"/>
+				<meta charset="utf-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet">
+            <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
+            <link rel="stylesheet" href="{% static 'CSS/mobile.css' %}">
+			</head>
+		<body>
+		<div class="header">
+			<div class="logo"><img  class="beelogo" src="{% static 'Images/BEEBLACK.png' %}"> </div>
+		<section class="nav-bar">
+				
+				<ol>
+					<li><a href="{% url 'home:home_page' %}"><button class="nav-bar-button">Home</button></a></li>
+					<li><a href="{% url 'products:product_page' %}"><button class="nav-bar-button">Products</button></a></li>
+					<li><a href="{% url 'contactus:contact' %}"><button class="nav-bar-button">Contact-us</button></a></li>
+				</ol>
+		<div class="profile">
+			<a href="{% url 'users:profile' %}"><img src="{% static 'Images/user_icon-profile.png' %}" alt="user-profile" class="user-profile">
+			</a>
+		</div>
+		</section>
+		</div>
+
+		<div class="divider"></div>
+	
+	<div class="main">
+	<section class="hero-section">
+		<div class="hero-content">
+			<h1>Pure. Natural. Honey.</h1>
+			<p>Discover the finest, sustainably sourced honey...</p>
+			<a href="{% url 'products:product_page' %}"><button class="shop-button">Shop Now</button></a>
+		</div>
+	</section>
+	
+
+	<section class="our-services-section">
+		<div class="sevices-text"><h2 class="services-main-title">Our Services</h2></div>
+		<div class="our-services-content">
+			<div class="services-card">
+				<img src="{% static 'Images/saving-icon.png' %}" alt="Savings" class="services-icon">
+				<h3 class="services-title">Great Savings</h3>
+				<p class="services-description">big saving every order</p>
+			</div>
+			<div class="services-card">
+				<img src="{% static 'Images/Support-icon.png' %}" alt="Support" class="services-icon">
+				<h3 class="services-title">24*7 Support</h3>
+				<p class="services-description">one-on-one support</p>
+			</div>
+			<div class="services-card">
+				<img src="{% static 'Images/Delivery-icon.png' %}" alt="Delivery" class="services-icon">
+				<h3 class="services-title">Statwide Delivery</h3>
+				<p class="services-description">delivery statwide</p>
+			</div>
+		</div>
+	</section>
+	<hr>
+	<section class="our-Featured-Products-section">
+		<div class="Featured-Products-text"><h2 class="Featured-Products-main-title">Our Featured Products</h2></div>
+		<div class="our-Featured-content">
+			<div class="featured-products-card">
+				<img src="{% static 'Images/jarofhoney.jpg' %}" alt="bee-honey" class="featured-products-icon">
+				<h3 class="featured-products-title">Wildflower Honey</h3>
+				<p class="featured-products-description">Delicate floral notes</p>
+			</div>
+			<div class="featured-products-card">
+				<img src="{% static 'Images/oliveoil.jpg' %}" alt="olive-oil" class="featured-products-icon">
+				<h3 class="featured-products-title">Olive Oil</h3>
+				<p class="featured-products-description">The finest types of olive oil</p>
+			</div>
+		</div>
+		
+	</section>
+	</div>
+	<div class="footer">
+	<hr>
+	<section class="AboutUs-section">
+	<div class="AboutUs-content"id="AboutUs">
+	
+		<h2>About Us</h2>
+		<p> Bee House is a family-owned business dedicated to bringing the finest honey to your table. Our passion for beekeeping and commitment to sustainability ensures that every jar of honey is a testament to quality and care.
+			</p>
+		<p> بيت النحل شركة عائلية تُعنى بتقديم أجود أنواع العسل إلى موائدكم. شغفنا بتربية النحل والتزامنا بالاستدامة يضمن أن يكون كل برطمان عسل شاهدًا على الجودة والعناية
+			</p>
+		<section class="location-section">
+			<h2>location</h2>
+		 	<p>[مستغانم/saint jules ]: العنوان📍</p>	
+		</section>
+		<center>
+		<iframe title="bee-house"
+				    width="700"
+				    height="458"
+				    id="gmap_canvas"
+				    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1408.2364253701314!2d0.09763265266804802!3d35.92988535768857!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x128203baa3155bd5%3A0x83dfc5dcaa0c79bb!2z2KjZitiqINin2YTZhtit2YQg2Ygg2KfZhNi52LPZhCDYp9mE2YXYtdmB2ZHZiSBCZWUgaG91c2UyNw!5e0!3m2!1sfr!2sdz!4v1764360352751!5m2!1sfr!2sdz"
+				    scrolling="no">
+		</iframe>
+		</center>
+	</div>
+	<hr>
+	</section>
+	
+	<section id="media">
+		<div class="social-icons">
+		  
+		  <a href="https://www.instagram.com/bee_house27" target="_blank">
+			<img src="{% static 'Images/fa-instagram-f.png' %}" alt="Instagram" class="social-icon">
+		  </a>
+		  <a href="https://www.facebook.com/lahcen2znd7" target="_blank">
+			<img src="{% static 'Images/fa-facebook-f.png' %}" alt="Facebook" class="social-icon">
+		  </a>
+		</div>		
+	</section>
+	<section id="copyright">
+		<p>© 2025 Bee House. All rights reserved.
+	</p>
+	</section>
+		
+	</div>
+</body>
+</html>
