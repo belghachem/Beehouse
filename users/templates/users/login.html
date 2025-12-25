@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Bee House</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'CSS/profile-page_stylesheet.css' %}">
+    <link rel="stylesheet" href="{% static 'CSS/login.css' %}">
+    <link rel="stylesheet" href="{% static 'CSS/mobile.css' %}">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <img class="beelogo" src="{% static 'Images/BEEBLACK.png' %}" alt="Bee House Logo">
+        </div>
+        <section class="nav-bar">
+            <ol>
+                <li><a href="{% url 'home:home_page' %}"><button class="nav-bar-button">Home</button></a></li>
+                <li><a href="{% url 'products:product_page' %}"><button class="nav-bar-button">Products</button></a></li>
+                <li><a href="{% url 'contactus:contact' %}"><button class="nav-bar-button">Contact-us</button></a></li>
+            </ol>
+            <div class="profile">
+                <a href="{% url 'users:profile' %}">
+                    <img src="{% static 'Images/user_icon-profile.png' %}" alt="user-profile" class="user-profile">
+                </a>
+            </div>
+        </section>
+    </div>
+    <div class="divider"></div>
+
+    <!-- Login Container -->
+    <div class="login-wrapper">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="logo-container">
+                    <div class="bee-icon">🐝</div>
+                </div>
+                <h1>Bee House</h1>
+                <p>Welcome back! Please login to your account</p>
+            </div>
+
+            <div class="login-body">
+                <!-- Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Login Form -->
+                <form method="POST" action="{% url 'users:login' %}" id="loginForm">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+                            <input 
+                                type="text" 
+                                id="username" 
+                                name="username" 
+                                placeholder="Enter your username" 
+                                required 
+                                autofocus
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                placeholder="Enter your password" 
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-login">Sign In</button>
+                </form>
+
+                <div class="register-link">
+                    Don't have an account? <a href="{% url 'users:register' %}">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

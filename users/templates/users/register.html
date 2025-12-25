@@ -1,0 +1,177 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Bee House</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
+    <link rel="stylesheet" href="{% static 'CSS/profile-page_stylesheet.css' %}">
+    <link rel="stylesheet" href="{% static 'CSS/register.css' %}">
+    <link rel="stylesheet" href="{% static 'CSS/mobile.css' %}">
+</head>
+<body>
+    <div class="header">
+        <div class="logo"><img class="beelogo" src="{% static 'Images/BEEBLACK.png' %}"></div>
+        <section class="nav-bar">
+            <ol>
+                <li><a href="{% url 'home:home_page' %}"><button class="nav-bar-button">Home</button></a></li>
+                <li><a href="{% url 'products:product_page' %}"><button class="nav-bar-button">Products</button></a></li>
+                <li><a href="{% url 'contactus:contact' %}"><button class="nav-bar-button">Contact-us</button></a></li>
+            </ol>
+            <div class="profile">
+                <a href="{% url 'users:profile' %}">
+                    <img src="{% static 'Images/user_icon-profile.png' %}" alt="user-profile" class="user-profile">
+                </a>
+            </div>
+        </section>
+    </div>
+    <div class="divider"></div>
+    <div class="register-wrapper">
+        <div class="register-container">
+            <div class="register-header">
+                <div class="logo-container">
+                    <div class="bee-icon">🐝</div>
+                </div>
+                <h1>Join Bee House</h1>
+                <p>Create your account and start shopping</p>
+            </div>
+
+            <div class="register-body">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" action="{% url 'users:register' %}" id="registerForm">
+                    {% csrf_token %}
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first_name">First Name *</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">👤</span>
+                                <input 
+                                    type="text" 
+                                    id="first_name" 
+                                    name="first_name" 
+                                    placeholder="John" 
+                                    value="{{ request.POST.first_name }}"
+                                    required
+                                >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Last Name *</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">👤</span>
+                                <input 
+                                    type="text" 
+                                    id="last_name" 
+                                    name="last_name" 
+                                    placeholder="Doe" 
+                                    value="{{ request.POST.last_name }}"
+                                    required
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="username">Username *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">@</span>
+                            <input 
+                                type="text" 
+                                id="username" 
+                                name="username" 
+                                placeholder="johndoe" 
+                                value="{{ request.POST.username }}"
+                                required
+                            >
+                        </div>
+                        <p class="help-text">This will be your unique identifier</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📱</span>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                name="phone" 
+                                placeholder="+213 XXX XXX XXX" 
+                                value="{{ request.POST.phone }}"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Address *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📍</span>
+                            <textarea 
+                                id="address" 
+                                name="address" 
+                                placeholder="Your full address" 
+                                required
+                            >{{ request.POST.address }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password1">Password *</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">🔒</span>
+                                <input 
+                                    type="password" 
+                                    id="password1" 
+                                    name="password1" 
+                                    placeholder="Create password" 
+                                    required
+                                >
+                            </div>
+                            <div class="password-strength">
+                                <div class="password-strength-bar" id="strengthBar"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password2">Confirm Password *</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">🔒</span>
+                                <input 
+                                    type="password" 
+                                    id="password2" 
+                                    name="password2" 
+                                    placeholder="Confirm password" 
+                                    required
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-register" id="submitBtn">Create Account</button>
+                </form>
+
+                <div class="login-link">
+                    Already have an account? <a href="{% url 'users:login' %}">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'JS/register.js' %}"></script>
+</body>
+</html>
