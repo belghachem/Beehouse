@@ -1,0 +1,447 @@
+/* Base Mobile Reset */
+@media screen and (max-width: 768px) {
+    * {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    /* Header Fixes */
+    .header {
+        padding: 0.5rem 0;
+        min-height: auto;
+    }
+
+    .logo {
+        height: 60px;
+        width: 80px;
+        margin: 0.5rem;
+    }
+
+    .beelogo {
+        max-height: 100%;
+        max-width: 100%;
+    }
+
+    /* Navigation Fixes */
+    .nav-bar {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0.5rem;
+        position: relative;
+    }
+
+    .nav-bar ol {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-bar li {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .nav-bar-button {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.95rem;
+        width: 100%;
+        display: block;
+    }
+
+    /* Profile Icons */
+    .profile {
+        position: static;
+        width: 100%;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .user-profile,
+    .cart-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Login/Register Pages */
+    .login-container,
+    .register-container {
+        margin: 1rem;
+        max-width: 100%;
+        border-radius: 15px;
+    }
+
+    .login-header,
+    .register-header {
+        padding: 2rem 1.5rem;
+    }
+
+    .login-header h1,
+    .register-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .bee-icon {
+        font-size: 3rem;
+    }
+
+    .login-body,
+    .register-body {
+        padding: 1.5rem;
+    }
+
+    /* Form Elements */
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        padding: 1rem 1rem 1rem 3rem;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    /* Buttons */
+    .btn,
+    .btn-login,
+    .btn-register,
+    .save-btn,
+    .submit-button {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1rem;
+        min-height: 48px; /* Touch target size */
+    }
+
+    /* Dashboard */
+    .dashboard-container {
+        padding: 0 5%;
+    }
+
+    .dashboard-header h2 {
+        font-size: 2rem;
+    }
+
+    .dashboard-content {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-sidebar {
+        position: static;
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .stat-card {
+        padding: 1.5rem;
+    }
+
+    /* Cart Page */
+    .cart-container {
+        margin: 1.5rem auto;
+        padding: 0 5%;
+    }
+
+    .cart-header h1 {
+        font-size: 1.8rem;
+    }
+    .quantity-control {
+        flex-direction: row;
+        justify-content: flex-start;
+        margin: 0.5rem 0;
+    }
+
+    .cart-summary {
+        text-align: center;
+    }
+
+    /* Checkout Page */
+    .checkout-container {
+        grid-template-columns: 1fr;
+        margin: 1.5rem auto;
+        padding: 0 5%;
+    }
+
+    .checkout-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .order-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .delivery-options {
+        grid-template-columns: 1fr;
+    }
+
+    #map,
+    #map-stop-desk {
+        height: 300px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    /* Product Pages */
+    .products-card {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .product-detail-grid {
+        grid-template-columns: 1fr;
+        padding: 1.5rem;
+        gap: 2rem;
+    }
+
+    .product-title {
+        font-size: 1.8rem;
+    }
+
+    .product-price {
+        font-size: 2rem;
+    }
+
+    .product-image {
+        height: 350px;
+    }
+
+    /* Contact Page */
+    .contact-container {
+        padding: 0 5%;
+    }
+
+    .contact-header h2 {
+        font-size: 1.8rem;
+    }
+
+    .contact-content {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .contact-info,
+    .contact-form-wrapper {
+        flex: 1 1 100%;
+    }
+
+    /* Filters */
+    .filters-container {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem 5%;
+    }
+
+    .filter-group {
+        width: 100%;
+    }
+
+    .filter-dropdown {
+        width: 100%;
+        min-width: unset;
+        font-size: 14px;
+    }
+
+    .clear-filters-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Wishlist */
+    .wishlist-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .wishlist-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    /* Orders */
+    .orders-grid {
+        gap: 1rem;
+    }
+
+    .order-card {
+        padding: 1rem;
+    }
+
+    .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .order-details {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    /* Toast Notifications */
+    .toast-notification {
+        right: 10px;
+        left: 10px;
+        top: 10px;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+
+    /* Alerts */
+    .alert {
+        padding: 0.8rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        min-height: 60vh;
+        padding: 2rem 1rem;
+    }
+
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+    }
+
+    /* Services & Featured Products */
+    .our-services-content,
+    .our-Featured-content {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+
+    .services-card,
+    .featured-products-card {
+        width: 100%;
+    }
+
+    /* Footer */
+    .AboutUs-content {
+        margin: 5%;
+    }
+
+    .AboutUs-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .AboutUs-content p {
+        font-size: 0.95rem;
+    }
+}
+
+/* Small Mobile Devices */
+@media screen and (max-width: 480px) {
+    .login-header h1,
+    .register-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .bee-icon {
+        font-size: 2.5rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        padding: 0.9rem 0.9rem 0.9rem 2.5rem;
+        font-size: 16px;
+    }
+
+    .input-icon {
+        font-size: 1rem;
+        left: 12px;
+    }
+
+    .nav-bar-button {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.9rem;
+    }
+
+    .user-profile,
+    .cart-icon {
+        width: 35px;
+        height: 35px;
+    }
+
+    .product-title {
+        font-size: 1.5rem;
+    }
+
+    .product-price {
+        font-size: 1.8rem;
+    }
+
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .dashboard-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .checkout-header h1,
+    .cart-header h1 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Landscape Orientation Fix */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .hero-section {
+        min-height: 100vh;
+    }
+
+    .login-container,
+    .register-container {
+        margin: 1rem auto;
+    }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+    button,
+    .btn,
+    a {
+        min-height: 44px; /* iOS minimum */
+        min-width: 44px;
+    }
+
+    .nav-bar-button:active,
+    .btn:active,
+    button:active {
+        transform: scale(0.98);
+    }
+}
+
+/* Fix for iOS Safari */
+@supports (-webkit-touch-callout: none) {
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 16px !important; /* Prevents zoom */
+    }
+}
+
+/* Prevent horizontal scroll */
+body {
+    overflow-x: hidden;
+}
+
+* {
+    max-width: 100%;
+}

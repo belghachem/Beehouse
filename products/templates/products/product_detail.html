@@ -1,0 +1,542 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.name }} - Bee House</title>
+    <link rel="stylesheet" type="text/CSS" href="{% static 'CSS/profile-page_stylesheet.css' %}"/>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
+    <link rel="stylesheet" href="{% static 'CSS/mobile.css' %}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Epilogue', sans-serif;
+        }
+
+        body {
+            background: #fff;
+            min-height: 100vh;
+        }
+
+        .product-detail-container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 3%;
+        }
+
+        .breadcrumb {
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb a {
+            color: #8B7355;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb a:hover {
+            color: #d97706;
+        }
+
+        .breadcrumb span {
+            margin: 0 0.5rem;
+            color: #999;
+        }
+
+        .product-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            background: #F5F1E8;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image-section {
+            position: relative;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .product-info-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .product-category {
+            color: #d97706;
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-title {
+            font-size: 2.5rem;
+            color: #8B7355;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .product-price-section {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            border-left: 4px solid #d97706;
+        }
+
+        .product-price {
+            font-size: 3rem;
+            color: #d97706;
+            font-weight: 700;
+        }
+
+        .price-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        .product-quantity-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .quantity-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .quantity-value {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        .product-description {
+            margin: 2rem 0;
+        }
+
+        .description-title {
+            font-size: 1.3rem;
+            color: #8B7355;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .description-text {
+            color: #555;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .product-features {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+
+        .feature-icon {
+            color: #d97706;
+            font-size: 1.2rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-add-cart {
+            flex: 2;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #000;
+            padding: 1.2rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+        }
+
+        .btn-add-cart:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.4);
+        }
+
+        .btn-wishlist {
+            flex: 1;
+            background: white;
+            color: #d97706;
+            padding: 1.2rem;
+            border: 2px solid #d97706;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-wishlist:hover {
+            background: #d97706;
+            color: white;
+        }
+
+        .back-to-products {
+            display: inline-block;
+            margin-bottom: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: white;
+            color: #8B7355;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            border: 2px solid #d97706;
+            transition: all 0.3s ease;
+        }
+
+        .back-to-products:hover {
+            background: #d97706;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        @media screen and (max-width: 968px) {
+            .product-detail-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 2rem;
+            }
+
+            .product-title {
+                font-size: 2rem;
+            }
+
+            .product-price {
+                font-size: 2.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }  
+        .wishlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .wishlist-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .wishlist-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .wishlist-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .wishlist-info {
+            padding: 1.5rem;
+        }
+
+        .wishlist-info h4 {
+            color: #8B7355;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .wishlist-price {
+            color: #d97706;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .wishlist-actions {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .wishlist-actions a {
+            flex: 1;
+            text-decoration: none;
+        }
+
+        .wishlist-btn {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-cart {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #000;
+            box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);
+        }
+
+        .btn-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.4);
+        }
+
+        .btn-remove {
+            background: white;
+            color: #dc2626;
+            border: 2px solid #dc2626;
+        }
+
+        .btn-remove:hover {
+            background: #dc2626;
+            color: white;
+        }
+
+        /* Empty State */
+        .wishlist-grid p {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        .wishlist-grid p a {
+            color: #d97706;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .wishlist-grid p a:hover {
+            text-decoration: underline;
+        }
+
+        /* Dashboard Section Content */
+        .dashboard-section-content {
+            background: #F5F1E8;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-section-content h3 {
+            color: #8B7355;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid #d97706;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #dc2626;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .wishlist-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .wishlist-actions {
+                flex-direction: column;
+            }
+            
+            .wishlist-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo"><img class="beelogo" src="{% static 'Images/BEEBLACK.png' %}"></div>
+        <section class="nav-bar">
+            <ol>
+                <li><a href="{% url 'home:home_page' %}"><button class="nav-bar-button">Home</button></a></li>
+                <li><a href="{% url 'products:product_page' %}"><button class="nav-bar-button">Products</button></a></li>
+                <li><a href="{% url 'contactus:contact' %}"><button class="nav-bar-button">Contact-us</button></a></li>
+            </ol>
+            <div class="profile">
+                <div class="cart-icon-container">
+                    <a href="{% url 'cart:view_cart' %}">
+                        <img src="{% static 'Images/cart-icon.png' %}" alt="shopping cart" class="cart-icon">
+                    </a>
+                </div>
+                <a href="{% url 'users:profile' %}">
+                    <img src="{% static 'Images/user_icon-profile.png' %}" alt="user-profile" class="user-profile">
+                </a>
+            </div>
+        </section>
+    </div>
+    <div class="divider"></div>
+
+    <!-- Product Detail Container -->
+    <div class="product-detail-container">
+        <!-- Product Detail Grid -->
+        <div class="product-detail-grid">
+            <!-- Product Image Section -->
+            <div class="product-image-section">
+                <div class="product-badge">🐝 Natural Product</div>
+                {% if product.image %}
+                    <img src="{% static 'Images/jarofhoney.jpg' %}" alt="{{ product.name }}" class="product-image">
+                {% else %}
+                    <img src="{% static 'Images/jarofhoney.jpg' %}" alt="{{ product.name }}" class="product-image">
+                {% endif %}
+            </div>
+
+            <!-- Product Info Section -->
+            <div class="product-info-section">
+                <div class="product-category">{{ product.category }}</div>
+                <h1 class="product-title">{{ product.name }}</h1>
+
+                <!-- Price Section -->
+                <div class="product-price-section">
+                    <div class="product-price">{{ product.price }} DZD</div>
+                    <div class="price-label">Tax included</div>
+                </div>
+
+                <!-- Quantity Info -->
+                <div class="product-quantity-info">
+                    <span class="quantity-label">📦 Quantity:</span>
+                    <span class="quantity-value">{{ product.quantity }}</span>
+                </div>
+
+                <!-- Description -->
+                <div class="product-description">
+                    <h3 class="description-title">About This Product</h3>
+                    <p class="description-text">{{ product.description }}</p>
+                </div>
+
+                <!-- Product Features -->
+                <div class="product-features">
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span>100% Natural & Organic</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span>Premium Quality Guaranteed</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <span>Locally Sourced</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <form action="{% url 'cart:add_to_cart' product.id %}" method="POST" style="flex: 2;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-add-cart">🛒 Add to Cart</button>
+                    </form>
+                   <!-- Wishlist Button -->
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'users:add_to_wishlist' product.id %}" class="btn-wishlist">
+                            ❤️ Wishlist
+                        </a>
+                    {% else %}
+                        <a href="{% url 'users:login' %}" class="btn-wishlist">
+                            ❤️ Wishlist
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    // Pass user role to JavaScript
+    document.body.dataset.isStaff = '{{ user.is_staff|yesno:"true,false" }}';
+    document.body.dataset.isAdmin = '{{ user.is_superuser|yesno:"true,false" }}';
+</script>
+<script src="{% static 'JS/admin_invoice.js' %}"></script>
+</body>
+</html>

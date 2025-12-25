@@ -1,0 +1,399 @@
+{% load static %}
+<!DOCTYPE html>
+	<html>
+		<head>
+			<title>{% block title %}BEE HOUSE{% endblock %}</title>
+			<link rel="stylesheet" type="text/CSS" href="{% static 'CSS/prodect-page-stylesheet.css' %}"/>
+			<meta charset="utf-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet">
+            <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
+            <link rel="stylesheet" href="{% static 'CSS/mobile.css' %}">
+            <style>
+                .toast-notification {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+                    z-index: 9999;
+                    animation: slideIn 0.3s ease-out;
+                    display: none;
+                }
+
+                .toast-notification.show {
+                    display: block;
+                }
+
+                .toast-notification.error {
+                    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+                }
+
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(400px);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+
+                .cart-badge {
+                    position: absolute;
+                    top: -8px;
+                    right: -8px;
+                    background: #dc2626;
+                    color: white;
+                    border-radius: 50%;
+                    width: 24px;
+                    height: 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 0.75rem;
+                    font-weight: 700;
+                }
+            </style>
+</head>
+	<body>
+	<div class="header">
+		<div class="logo"><img  class="beelogo" src="{% static 'Images/BEEBLACK.png' %}"> </div>
+	<section class="nav-bar">
+			
+			<ol>
+				<li><a href="{% url 'home:home_page' %}"><button class="nav-bar-button">Home</button></a></li>
+				<li><a href="{% url 'products:product_page' %}"><button class="nav-bar-button">Products</button></a></li>
+				<li><a href="{% url 'contactus:contact' %}"><button class="nav-bar-button">Contact-us</button></a></li>
+				</ol>
+		
+	<div class="profile">
+		<div class="cart-icon-container">
+		    <a href="{% url 'cart:view_cart' %}">  <!-- Fixed this line -->
+		        <img src="{% static 'Images/cart-icon.png' %}" alt="shopping cart" class="cart-icon">
+		    </a>
+		</div>
+			<a href="{% url 'users:profile'%}"><img src="{% static 'Images/user_icon-profile.png' %}" alt="user-profile" class="user-profile">
+		</a>
+		</div>
+	</section>
+	</div>
+	<div class="divider"></div>
+	<!-- Filter Section -->
+    <section class="filter-section">
+        <div class="filters-container">
+            
+            <!-- Category Dropdown -->
+            <div class="filter-group">
+                <label for="categoryFilter" class="filter-label">
+                    <span class="filter-icon">Category:</span>
+                </label>
+                <select id="categoryFilter" name="category" class="filter-dropdown">
+                    <option value="all">All Products</option>
+                    <option value="honey">Bee Honey</option>
+                    <option value="olive-oil">Olive Oil</option>
+                </select>
+            </div>
+
+            <!-- Sort By Dropdown -->
+            <div class="filter-group">
+                <label for="sortFilter" class="filter-label">
+                    <span class="filter-icon">Sort By:</span>
+                </label>
+                <select id="sortFilter" name="sort" class="filter-dropdown">
+                    <option value="none">Default</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="size-low">Size: Small to Large</option>
+                    <option value="size-high">Size: Large to Small</option>
+                    <option value="name-az">Name: A to Z</option>
+                    <option value="name-za">Name: Z to A</option>
+                </select>
+            </div>
+
+            <!-- Price Range Dropdown -->
+            <div class="filter-group">
+                <label for="priceFilter" class="filter-label">
+                    <span class="filter-icon">Price Range:</span>
+                </label>
+                <select id="priceFilter" name="price" class="filter-dropdown">
+                    <option value="all">All Prices (DZD)</option>
+                    <option value="0-1500">0 - 1500</option>
+                    <option value="1500-2000">1500 - 2000</option>
+                    <option value="2000-3000">2000 - 3000</option>
+                    <option value="3000+">3000+</option>
+                </select>
+            </div>
+
+            <!-- Clear Filters Button -->
+            <div class="filter-group">
+                <button class="clear-filters-btn" id="clearFilters">
+                    <span class="filter-icon">Clear Filters</span>
+                </button>
+            </div>
+
+        </div>
+    </section>
+	<div class="divider"></div>
+    <div id="toast" class="toast-notification"></div>
+	<section class="prodects-section">
+        <div class="our-prodect-content" id="productsContainer">
+            {% for product in products %}
+            <div class="products-card" 
+                 data-category="{{ product.category|lower }}" 
+                 data-price="{{ product.price }}" 
+                 data-name="{{ product.name }}"
+                 data-quantity="{{ product.quantity }}">
+                 <img src="{% static 'Images/jarofhoney.jpg' %}" alt="{{ product.name }}" class="products-img" style="width: 100%; height: 300px;">
+                <a href="{% url 'products:product_detail' product.slug %}">
+                    <h3 class="products-title">{{ product.name }}</h3>
+                </a>
+                <p class="category">{{ product.category }} - {{ product.quantity }}</p>
+                <p class="description">{{ product.description|truncatewords:15 }}</p>
+                <p class="products-prix">{{ product.price }} DZD</p>
+                <a href="{% url 'products:product_detail' product.slug %}" class="view-details-btn">View Details</a>
+                <form action="{% url 'cart:add_to_cart' product.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="addtocart-btn">Add to Cart</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- No Results Message (hidden by default) -->
+        <div id="noResultsMessage" style="display: none; text-align: center; padding: 3rem; width: 100%;">
+            <h2 style="color: #8B7355; font-size: 2rem;">No products found</h2>
+            <p style="color: #666; margin-top: 1rem;">Try adjusting your filters</p>
+        </div>
+    </section>
+
+<!----------------------------------------------------------------------------------------------------------------------->
+<script>
+        // Get all filter elements
+        const categoryFilter = document.getElementById('categoryFilter');
+        const sortFilter = document.getElementById('sortFilter');
+        const priceFilter = document.getElementById('priceFilter');
+        const clearButton = document.getElementById('clearFilters');
+        const productsContainer = document.getElementById('productsContainer');
+        const noResultsMessage = document.getElementById('noResultsMessage');
+
+        // Function to extract number from quantity string (e.g., "500ml" -> 500)
+        function extractNumber(quantityStr) {
+            const numbers = quantityStr.match(/\d+/);
+            if (numbers) {
+                let num = parseInt(numbers[0]);
+                // Convert liters to ml for consistent comparison
+                if (quantityStr.toLowerCase().includes('l') && !quantityStr.toLowerCase().includes('ml')) {
+                    num = num * 1000;
+                }
+                return num;
+            }
+            return 0;
+        }
+
+        // Main filter function
+        function applyFilters() {
+            const category = categoryFilter.value;
+            const sort = sortFilter.value;
+            const priceRange = priceFilter.value;
+
+            // Get all product cards
+            let products = Array.from(document.querySelectorAll('.products-card'));
+            let visibleCount = 0;
+
+            // 1. FILTER by category
+            products.forEach(product => {
+                const productCategory = product.dataset.category.toLowerCase();
+                let matchesCategory = true;
+
+                if (category === 'honey') {
+                    matchesCategory = productCategory.includes('honey') || 
+                                     productCategory.includes('miel') ||
+                                     productCategory.includes('abeille');
+                } else if (category === 'olive-oil') {
+                    matchesCategory = productCategory.includes('olive') ||
+                                     productCategory.includes("huile d'olive");
+                }
+
+                product.style.display = matchesCategory ? 'block' : 'none';
+            });
+
+            // 2. FILTER by price range
+            products.forEach(product => {
+                if (product.style.display === 'none') return;
+
+                const price = parseFloat(product.dataset.price);
+                let matchesPrice = true;
+
+                if (priceRange === '0-1500') {
+                    matchesPrice = price <= 1500;
+                } else if (priceRange === '1500-2000') {
+                    matchesPrice = price >= 1500 && price <= 2000;
+                } else if (priceRange === '2000-3000') {
+                    matchesPrice = price >= 2000 && price <= 3000;
+                } else if (priceRange === '3000+') {
+                    matchesPrice = price >= 3000;
+                }
+
+                if (!matchesPrice) {
+                    product.style.display = 'none';
+                }
+            });
+
+            // 3. Get only visible products for sorting
+            const visibleProducts = products.filter(p => p.style.display !== 'none');
+            visibleCount = visibleProducts.length;
+
+            // 4. SORT visible products
+            if (sort !== 'none' && visibleProducts.length > 0) {
+                visibleProducts.sort((a, b) => {
+                    if (sort === 'price-low') {
+                        return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+                    } else if (sort === 'price-high') {
+                        return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+                    } else if (sort === 'name-az') {
+                        return a.dataset.name.localeCompare(b.dataset.name);
+                    } else if (sort === 'name-za') {
+                        return b.dataset.name.localeCompare(a.dataset.name);
+                    } else if (sort === 'size-low') {
+                        return extractNumber(a.dataset.quantity) - extractNumber(b.dataset.quantity);
+                    } else if (sort === 'size-high') {
+                        return extractNumber(b.dataset.quantity) - extractNumber(a.dataset.quantity);
+                    }
+                    return 0;
+                });
+
+                // Re-append sorted products
+                visibleProducts.forEach(product => {
+                    productsContainer.appendChild(product);
+                });
+            }
+
+            // 5. Show/hide "no results" message
+            if (visibleCount === 0) {
+                noResultsMessage.style.display = 'block';
+                productsContainer.style.display = 'none';
+            } else {
+                noResultsMessage.style.display = 'none';
+            }
+        }
+
+        // Clear all filters
+        function clearFilters() {
+            categoryFilter.value = 'all';
+            sortFilter.value = 'none';
+            priceFilter.value = 'all';
+            applyFilters();
+        }
+
+        // Event listeners
+        categoryFilter.addEventListener('change', applyFilters);
+        sortFilter.addEventListener('change', applyFilters);
+        priceFilter.addEventListener('change', applyFilters);
+        clearButton.addEventListener('click', clearFilters);
+
+        // Initial call to ensure everything is displayed correctly
+        applyFilters();
+            
+        // Function to show toast notification
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            if (isError) {
+                toast.classList.add('error');
+            } else {
+                toast.classList.remove('error');
+            }
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Function to update cart count badge
+        function updateCartBadge(count) {
+            let badge = document.querySelector('.cart-badge');
+            
+            if (!badge) {
+                // Create badge if doesn't exist
+                badge = document.createElement('span');
+                badge.className = 'cart-badge';
+                const cartIcon = document.querySelector('.cart-icon-container');
+                if (cartIcon) {
+                    cartIcon.style.position = 'relative';
+                    cartIcon.appendChild(badge);
+                }
+            }
+            
+            badge.textContent = count;
+            
+            // Animate badge
+            badge.style.transform = 'scale(1.3)';
+            setTimeout(() => {
+                badge.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        // Add to cart with AJAX
+        function addToCartAjax(productId, button) {
+            // Disable button during request
+            button.disabled = true;
+            button.textContent = 'Adding...';
+            
+            // Get CSRF token
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            fetch(`/cart/add/${productId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message);
+                    updateCartBadge(data.cart_count);
+                    
+                    // Reset button
+                    button.disabled = false;
+                    button.textContent = 'Add to Cart 🛒';
+                } else {
+                    showToast('Failed to add product', true);
+                    button.disabled = false;
+                    button.textContent = 'Add to Cart 🛒';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred', true);
+                button.disabled = false;
+                button.textContent = 'Add to Cart 🛒';
+            });
+        }
+
+        // Example: Attach to buttons with class "add-to-cart-btn"
+        document.addEventListener('DOMContentLoaded', function() {
+            const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+            
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const productId = this.getAttribute('data-product-id');
+                    addToCartAjax(productId, this);
+                });
+            });
+        });
+</script>
+</body>
+</html>

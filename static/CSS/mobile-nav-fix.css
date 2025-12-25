@@ -1,0 +1,267 @@
+/* Desktop */
+@media screen and (min-width: 769px) {
+    .hamburger-menu {
+        display: none !important;
+    }
+    
+    .mobile-nav-overlay {
+        display: none !important;
+    }
+}
+
+/* Mobile Navigation */
+@media screen and (max-width: 768px) {
+    /* Header adjustments */
+    .header {
+        padding: 0.8rem 1rem;
+        min-height: 70px;
+        position: relative;
+    }
+
+    .logo {
+        height: 50px;
+        width: 70px;
+        margin: 0;
+    }
+
+    /* Hide desktop navigation */
+    .nav-bar {
+        display: none;
+    }
+
+    /* Hamburger Menu Button */
+    .hamburger-menu {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        width: 30px;
+        height: 25px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        position: absolute;
+        top: 50%;
+        right: 1rem;
+        transform: translateY(-50%);
+        z-index: 1001;
+    }
+
+    .hamburger-menu span {
+        width: 30px;
+        height: 3px;
+        background: #8B7355;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        transform-origin: center;
+    }
+
+    /* Hamburger Animation (Open) */
+    .hamburger-menu.active span:nth-child(1) {
+        transform: rotate(45deg) translateY(10px);
+        background: #fff;
+    }
+
+    .hamburger-menu.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger-menu.active span:nth-child(3) {
+        transform: rotate(-45deg) translateY(-10px);
+        background: #fff;
+    }
+
+    /* Mobile Navigation Overlay */
+    .mobile-nav-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .mobile-nav-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Mobile Menu Panel */
+    .mobile-nav-panel {
+        position: fixed;
+        top: 0;
+        right: -300px;
+        width: 280px;
+        height: 100vh;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        z-index: 1000;
+        padding: 2rem 1.5rem;
+        overflow-y: auto;
+        transition: right 0.3s ease;
+        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .mobile-nav-panel.active {
+        right: 0;
+    }
+
+    /* Mobile Menu Header */
+    .mobile-menu-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .mobile-menu-logo {
+        width: 60px;
+        height: 60px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem;
+    }
+
+    .mobile-menu-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .mobile-menu-close {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Mobile Menu Items */
+    .mobile-nav-items {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .mobile-nav-items li {
+        margin-bottom: 0.5rem;
+    }
+
+    .mobile-nav-items a {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.2rem;
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    .mobile-nav-items a:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateX(5px);
+    }
+
+    .mobile-nav-items .icon {
+        font-size: 1.3rem;
+    }
+
+    /* Mobile Profile Section */
+    .mobile-profile-section {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .mobile-profile-btn {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+        padding: 1rem 1.2rem;
+        background: white;
+        color: #d97706;
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .mobile-profile-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .mobile-profile-btn img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+    }
+
+    /* Cart Icon in Header (always visible) */
+    .mobile-cart-icon {
+        position: absolute;
+        top: 50%;
+        right: 60px;
+        transform: translateY(-50%);
+        z-index: 100;
+    }
+
+    .mobile-cart-icon a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: #f59e0b;
+        border-radius: 50%;
+        position: relative;
+    }
+
+    .mobile-cart-icon img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .mobile-cart-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: #dc2626;
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 700;
+    }
+}
+
+/* Prevent body scroll when menu is open */
+body.menu-open {
+    overflow: hidden;
+}
