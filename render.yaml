@@ -10,7 +10,7 @@ services:
     name: Beehouse
     runtime: python
     buildCommand: './build.sh'
-    startCommand: 'gunicorn BeeHouse.asgi:application' 
+    startCommand: 'python -m gunicorn BeeHouse.asgi:application -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT' 
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -20,6 +20,7 @@ services:
         generateValue: true
       - key: WEB_CONCURRENCY
         value: 4
+
 
 
 
