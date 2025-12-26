@@ -6,7 +6,12 @@ from .models import Order, OrderItem, ShippingRate, StopDesk
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django.conf import settings
 from twilio.rest import Client
+import logging
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
@@ -34,44 +39,127 @@ def clean_phone_number(phone):
     
     return phone
 
+def get_twilio_client():
+    """Create and return Twilio client using settings from .env"""
+    try:
+        # Check if using API Key or Auth Token
+        if hasattr(settings, 'SMS_API_KEY_SID') and settings.SMS_API_KEY_SID:
+            # Using API Key (more secure)
+            client = Client(
+                settings.SMS_API_KEY_SID,
+                settings.SMS_API_KEY_SECRET,
+                settings.SMS_ACCOUNT_SID
+            )
+            logger.info("Twilio client created with API Key")
+        else:
+            # Using Auth Token
+            client = Client(
+                settings.SMS_ACCOUNT_SID,
+                settings.SMS_AUTH_TOKEN
+            )
+            logger.info("Twilio client created with Auth Token")
+        return client
+    except Exception as e:
+        logger.error(f"Failed to create Twilio client: {e}")
+        return None
+
 def send_order_shipped(phone, order_id, tracking_number=None):
     """Send SMS when order is shipped"""
+    
+    # Check if SMS is enabled
+    if not getattr(settings, 'SMS_ENABLED', True):
+        logger.info(f"SMS disabled - Would send shipped notification for order #{order_id} to {phone}")
+        print(f"📱 SMS DISABLED - Order #{order_id} shipped notification for {phone}")
+        if tracking_number:
+            print(f"   Tracking: {tracking_number}")
+        return True
+    
     try:
-        account_sid = 'AC21caa82c442b0b6a9cbcbc8a44e729fb'  
-        auth_token = '0d5ee1af090805f6c7954078d5471be2'
-        client = Client(account_sid, auth_token)
+        client = get_twilio_client()
+        if not client:
+            logger.error("Failed to create Twilio client")
+            return False
+        
         phone = clean_phone_number(phone)
         
-        message = f"🚚 Good news! Your Bee House order #{order_id} has been shipped!"
+        message_body = f"🚚 Good news! Your Bee House order #{order_id} has been shipped!"
         if tracking_number:
-            message += f" Track it: {tracking_number}"
+            message_body += f" Track it: {tracking_number}"
         
-        client.messages.create(
-            body=message,
-            from_='+14197076659',  
+        message = client.messages.create(
+            body=message_body,
+            from_=settings.SMS_TWILIO_NUMBER,
             to=phone
         )
+        
+        logger.info(f"Shipped SMS sent successfully to {phone}. SID: {message.sid}")
         return True
+        
     except Exception as e:
-        print(f"SMS Error: {e}")
+        logger.error(f"SMS Error (shipped): {e}")
+        print(f"❌ SMS Error: {e}")
         return False
 
 def send_order_cancelled(phone, order_id):
     """Send SMS when order is cancelled"""
+    
+    # Check if SMS is enabled
+    if not getattr(settings, 'SMS_ENABLED', True):
+        logger.info(f"SMS disabled - Would send cancelled notification for order #{order_id} to {phone}")
+        print(f"📱 SMS DISABLED - Order #{order_id} cancelled notification for {phone}")
+        return True
+    
     try:
-        account_sid = 'AC21caa82c442b0b6a9cbcbc8a44e729fb'
-        auth_token = '0d5ee1af090805f6c7954078d5471be2'
-        client = Client(account_sid, auth_token)
+        client = get_twilio_client()
+        if not client:
+            logger.error("Failed to create Twilio client")
+            return False
+        
         phone = clean_phone_number(phone)
         
-        client.messages.create(
+        message = client.messages.create(
             body=f"❌ Your Bee House order #{order_id} has been cancelled. Contact us if you have questions.",
-            from_='+14197076659',
+            from_=settings.SMS_TWILIO_NUMBER,
             to=phone
         )
+        
+        logger.info(f"Cancelled SMS sent successfully to {phone}. SID: {message.sid}")
         return True
+        
     except Exception as e:
-        print(f"SMS Error: {e}")
+        logger.error(f"SMS Error (cancelled): {e}")
+        print(f"❌ SMS Error: {e}")
+        return False
+
+def send_order_delivered(phone, order_id):
+    """Send SMS when order is delivered"""
+    
+    # Check if SMS is enabled
+    if not getattr(settings, 'SMS_ENABLED', True):
+        logger.info(f"SMS disabled - Would send delivered notification for order #{order_id} to {phone}")
+        print(f"📱 SMS DISABLED - Order #{order_id} delivered notification for {phone}")
+        return True
+    
+    try:
+        client = get_twilio_client()
+        if not client:
+            logger.error("Failed to create Twilio client")
+            return False
+        
+        phone = clean_phone_number(phone)
+        
+        message = client.messages.create(
+            body=f"✅ Your Bee House order #{order_id} has been delivered! Enjoy your products! 🐝",
+            from_=settings.SMS_TWILIO_NUMBER,
+            to=phone
+        )
+        
+        logger.info(f"Delivered SMS sent successfully to {phone}. SID: {message.sid}")
+        return True
+        
+    except Exception as e:
+        logger.error(f"SMS Error (delivered): {e}")
+        print(f"❌ SMS Error: {e}")
         return False
 
 @admin.register(Order)
@@ -118,6 +206,9 @@ class OrderAdmin(admin.ModelAdmin):
         ('Pricing', {
             'fields': ('subtotal', 'shipping_cost', 'total_price')
         }),
+        ('Tracking', {
+            'fields': ('tracking_number',)
+        }),
         ('Order Summary', {
             'fields': ('order_details_summary',),
             'classes': ('collapse',)
@@ -147,7 +238,7 @@ class OrderAdmin(admin.ModelAdmin):
                 'style="background: #417690; color: white; padding: 15px 40px; text-decoration: none; '
                 'border-radius: 10px; font-size: 16px; font-weight: bold; '
                 'display: inline-block; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">'
-                'View/Print Invoice</a>'
+                '📄 View/Print Invoice</a>'
                 '<p style="margin-top: 15px; color: #666; font-size: 14px;">'
                 'Click to view the printable invoice in a new tab</p>'
                 '</div>',
@@ -193,14 +284,16 @@ class OrderAdmin(admin.ModelAdmin):
     actions = ['mark_as_processing', 'mark_as_shipped', 'mark_as_delivered', 'mark_as_cancelled']
     
     def mark_as_processing(self, request, queryset):
+        """Mark orders as processing"""
         updated = queryset.update(status='processing')
-        self.message_user(request, f'{updated} order(s) marked as Processing')
-    mark_as_processing.short_description = 'Mark selected as Processing'
+        self.message_user(request, f'{updated} order(s) marked as Processing ⏳')
+    mark_as_processing.short_description = '⏳ Mark selected as Processing'
     
     def mark_as_shipped(self, request, queryset):
         """Mark orders as shipped and send SMS notification"""
         updated = 0
         sms_sent = 0
+        sms_failed = 0
         
         for order in queryset:
             # Update status
@@ -211,19 +304,56 @@ class OrderAdmin(admin.ModelAdmin):
             # Send SMS
             if send_order_shipped(order.phone, order.id, order.tracking_number):
                 sms_sent += 1
+            else:
+                sms_failed += 1
         
-        self.message_user(request, f'{updated} order(s) marked as Shipped. {sms_sent} SMS sent.')
-    mark_as_shipped.short_description = 'Mark selected as Shipped (Send SMS)'
+        # Build message
+        msg = f'{updated} order(s) marked as Shipped 🚚'
+        if getattr(settings, 'SMS_ENABLED', True):
+            msg += f' | {sms_sent} SMS sent ✅'
+            if sms_failed > 0:
+                msg += f' | {sms_failed} SMS failed ❌'
+        else:
+            msg += ' | SMS notifications disabled in settings'
+        
+        self.message_user(request, msg)
+    mark_as_shipped.short_description = '🚚 Mark selected as Shipped (Send SMS)'
     
     def mark_as_delivered(self, request, queryset):
-        updated = queryset.update(status='delivered')
-        self.message_user(request, f'{updated} order(s) marked as Delivered')
-    mark_as_delivered.short_description = 'Mark selected as Delivered'
+        """Mark orders as delivered and send SMS notification"""
+        updated = 0
+        sms_sent = 0
+        sms_failed = 0
+        
+        for order in queryset:
+            # Update status
+            order.status = 'delivered'
+            order.save()
+            updated += 1
+            
+            # Send SMS
+            if send_order_delivered(order.phone, order.id):
+                sms_sent += 1
+            else:
+                sms_failed += 1
+        
+        # Build message
+        msg = f'{updated} order(s) marked as Delivered ✅'
+        if getattr(settings, 'SMS_ENABLED', True):
+            msg += f' | {sms_sent} SMS sent ✅'
+            if sms_failed > 0:
+                msg += f' | {sms_failed} SMS failed ❌'
+        else:
+            msg += ' | SMS notifications disabled in settings'
+        
+        self.message_user(request, msg)
+    mark_as_delivered.short_description = '✅ Mark selected as Delivered (Send SMS)'
     
     def mark_as_cancelled(self, request, queryset):
         """Mark orders as cancelled and send SMS notification"""
         updated = 0
         sms_sent = 0
+        sms_failed = 0
         
         for order in queryset:
             # Update status
@@ -234,9 +364,20 @@ class OrderAdmin(admin.ModelAdmin):
             # Send SMS
             if send_order_cancelled(order.phone, order.id):
                 sms_sent += 1
+            else:
+                sms_failed += 1
         
-        self.message_user(request, f'{updated} order(s) marked as Cancelled. {sms_sent} SMS sent.')
-    mark_as_cancelled.short_description = 'Mark selected as Cancelled (Send SMS)'
+        # Build message
+        msg = f'{updated} order(s) marked as Cancelled ❌'
+        if getattr(settings, 'SMS_ENABLED', True):
+            msg += f' | {sms_sent} SMS sent ✅'
+            if sms_failed > 0:
+                msg += f' | {sms_failed} SMS failed ❌'
+        else:
+            msg += ' | SMS notifications disabled in settings'
+        
+        self.message_user(request, msg)
+    mark_as_cancelled.short_description = '❌ Mark selected as Cancelled (Send SMS)'
 
 
 @admin.register(OrderItem)
