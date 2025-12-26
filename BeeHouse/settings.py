@@ -10,7 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = False
 
 # Authentication
 LOGIN_URL = 'users:login'
@@ -18,7 +18,7 @@ LOGIN_REDIRECT_URL = 'home:home_page'
 LOGOUT_REDIRECT_URL = 'home:home_page'
 
 # Allowed hosts
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
 
 # Database
 DATABASES = {
@@ -168,4 +168,5 @@ LOGGING = {
     },
 
 }
+
 
