@@ -1,21 +1,25 @@
+databases:
+  - name: behoouse_tv2
+    plan: free
+    databaseName: behoouse_tv2
+    user: behoouse_tv2_user
+
 services:
   - type: web
-    name: beehouse
-    approx: python
+    plan: free
+    name: Beehouse
+    runtime: python
     buildCommand: './build.sh'
-    startCommand: 'python -m uvicorn BeeHouse.asgi:application --host 0.0.0.0 --port $PORT'
+    startCommand: 'gunicorn BeeHouse.asgi:application' 
     envVars:
-      - key: SECRET_KEY
-        sync: false
-      - key: DEBUG
-        value: False
       - key: DATABASE_URL
         fromDatabase:
           name: behoouse_tv2
-          property: connectionstring
-      - key: PYTHON_VERSION
-
-        value: 3.11.0
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
 
 
 
