@@ -3,7 +3,7 @@ services:
     name: beehouse
     approx: python
     buildCommand: ./build.sh
-    startCommand: python3 -m guunicorn BeeHouse.asgi:application -k uvicorn.workers.UvicornWorker
+    startCommand: python -m guunicorn BeeHouse.asgi:application -k uvicorn.workers.UvicornWorker
     envVars:
       - key: SECRET_KEY
         sync: false
@@ -16,3 +16,4 @@ services:
       - key: PYTHON_VERSION
 
         value: 3.11.0
+
