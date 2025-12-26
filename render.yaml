@@ -3,7 +3,7 @@ services:
     name: beehouse
     approx: python
     buildCommand: ./build.sh
-    startCommand: python -m gunicorn BeeHouse.asgi:application
+    startCommand: gunicorn BeeHouse.asgi:application
     envVars:
       - key: SECRET_KEY
         sync: false
@@ -16,5 +16,6 @@ services:
       - key: PYTHON_VERSION
 
         value: 3.11.0
+
 
 
