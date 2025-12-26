@@ -120,8 +120,8 @@ if not DEBUG:
     
     # CSRF trusted origins (update with your domain)
     CSRF_TRUSTED_ORIGINS = [
-        'https://beehouse-7vn5.onrender.com',
-        'https://www.beehouse-7vn5.onrender.com',
+        'https://beehouse-0s4k.onrender.com',
+        'https://www.beehouse-0s4k.onrender.com',
     ]
 else:
     # Development settings
@@ -168,3 +168,4 @@ LOGGING = {
     },
 
 }
+
