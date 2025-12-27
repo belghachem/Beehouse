@@ -142,7 +142,21 @@ def register(request):
             return redirect('users:verify')
         except Exception as e:
             logger.error(f"Registration SMS failed: {str(e)}")
-            
+             # Provide detailed error message
+            error_msg = str(e)
+            if "Unable to create record" in error_msg:
+                messages.error(request, f'Invalid phone number format. Please use format: 0783927367')
+            elif "authenticate" in error_msg.lower():
+                messages.error(request, 'SMS service configuration error. Please contact support.')
+            elif "20003" in error_msg:
+                messages.error(request, 'Twilio authentication failed. Please contact support.')
+            elif "21211" in error_msg:
+                messages.error(request, f'Invalid phone number: {phone}. Please check and try again.')
+            elif "21608" in error_msg:
+                messages.error(request, 'Phone number is not verified with Twilio. Please contact support.')
+            else:
+                messages.error(request, f'Error sending SMS: {error_msg}')
+           
             return redirect('users:register')
         
     return render(request, 'users/register.html')
@@ -253,3 +267,4 @@ def remove_from_wishlist(request, wishlist_id):
     messages.success(request, f'"{product_name}" removed from your wishlist.')
 
     return redirect('users:profile')
+
