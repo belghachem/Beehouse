@@ -24,30 +24,12 @@ def checkout(request):
     except UserProfile.DoesNotExist:
         profile = None
     
-    # Get all stop desks for map
-    stop_desks = StopDesk.objects.filter(is_active=True)
-    stop_desks_data = []
-    for desk in stop_desks:
-        stop_desks_data.append({
-            'id': desk.id,
-            'name': desk.name,
-            'wilaya': desk.wilaya,
-            'city': desk.city,
-            'address': desk.address,
-            'phone': desk.phone,
-            'lat': float(desk.latitude),
-            'lng': float(desk.longitude),
-            'hours': desk.working_hours,
-            'days': desk.working_days
-        })
-    
     total = cart.get_total()
     
     context = {
         'cart_items': cart_items,
         'total': total,
         'profile': profile,
-        'stop_desks_json': json.dumps(stop_desks_data)
     }
     
     return render(request, 'checkout.html', context)
@@ -73,15 +55,6 @@ def place_order(request):
         latitude = request.POST.get('latitude')
         longitude = request.POST.get('longitude')
         shipping_cost = request.POST.get('shipping_cost', 800)
-        stop_desk_id = request.POST.get('stop_desk_id')
-        
-        # Get stop desk if selected
-        stop_desk = None
-        if delivery_type == 'stop_desk' and stop_desk_id:
-            try:
-                stop_desk = StopDesk.objects.get(id=stop_desk_id)
-            except StopDesk.DoesNotExist:
-                pass
         
         # Calculate totals
         subtotal = cart.get_total()
@@ -92,7 +65,7 @@ def place_order(request):
         
         total_price = subtotal + shipping_cost
         
-        # Create order
+        # Create order (stop_desk will be null - delivery company assigns it)
         order = Order.objects.create(
             user=request.user,
             full_name=full_name,
@@ -101,7 +74,7 @@ def place_order(request):
             city=city,
             wilaya=wilaya,
             delivery_type=delivery_type,
-            stop_desk=stop_desk,
+            stop_desk=None,  # Delivery company assigns this
             latitude=latitude if latitude else None,
             longitude=longitude if longitude else None,
             subtotal=subtotal,

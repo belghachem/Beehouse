@@ -74,7 +74,7 @@
 
                 <div class="form-group">
                     <label for="wilaya">Wilaya *</label>
-                    <select id="wilaya" name="wilaya" required onchange="updateShippingCost()">
+                    <select id="wilaya" name="wilaya" required>
                         <option value="">Select Wilaya</option>
                         <option value="Adrar">Adrar</option>
                         <option value="Chlef">Chlef</option>
@@ -124,16 +124,6 @@
                         <option value="Aïn Témouchent">Aïn Témouchent</option>
                         <option value="Ghardaïa">Ghardaïa</option>
                         <option value="Relizane">Relizane</option>
-                        <option value="Timimoun">Timimoun</option>
-                        <option value="Bordj Badji Mokhtar">Bordj Badji Mokhtar</option>
-                        <option value="Ouled Djellal">Ouled Djellal</option>
-                        <option value="Béni Abbès">Béni Abbès</option>
-                        <option value="In Salah">In Salah</option>
-                        <option value="In Guezzam">In Guezzam</option>
-                        <option value="Touggourt">Touggourt</option>
-                        <option value="Djanet">Djanet</option>
-                        <option value="El M'Ghair">El M'Ghair</option>
-                        <option value="El Meniaa">El Meniaa</option>
                     </select>
                 </div>
 
@@ -142,7 +132,7 @@
                     <label>Delivery Method *</label>
                     <div class="delivery-options">
                         <div class="delivery-option">
-                            <input type="radio" id="home_delivery" name="delivery_type" value="home" checked onchange="handleDeliveryChange()">
+                            <input type="radio" id="home_delivery" name="delivery_type" value="home" checked>
                             <label for="home_delivery">
                                 <span class="icon">🏠</span>
                                 <span class="title">Home Delivery</span>
@@ -150,9 +140,9 @@
                             </label>
                         </div>
                         <div class="delivery-option">
-                            <input type="radio" id="stop_desk" name="delivery_type" value="stop_desk" onchange="handleDeliveryChange()">
+                            <input type="radio" id="stop_desk" name="delivery_type" value="stop_desk">
                             <label for="stop_desk">
-                                <span class="icon">🏢</span>
+                                <span class="icon">📦</span>
                                 <span class="title">Stop Desk Pickup</span>
                                 <span class="price" id="stop-price">Cheaper!</span>
                             </label>
@@ -160,61 +150,41 @@
                     </div>
                 </div>
 
-                <!-- Address Fields (shown for home delivery) -->
-                <div id="home-address-fields">
+                <!-- Info Message for Stop Desk -->
+                <div id="stop-desk-info" class="info-box" style="display: none;">
+                    <div class="info-icon">ℹ️</div>
+                    <div class="info-content">
+                        <strong>How Stop Desk Delivery Works:</strong>
+                        <p>After you complete your order, the delivery company will automatically assign the closest stop desk to your address. You'll receive a notification with the exact location and pickup details via SMS.</p>
+                    </div>
+                </div>
+
+                <!-- Address Fields (for both delivery types) -->
+                <div id="address-fields">
                     <div class="form-group">
                         <label for="city">City/Commune *</label>
                         <input type="text" id="city" name="city" 
                                value="{% if profile %}{{ profile.city }}{% endif %}" 
-                               placeholder="e.g., Oran, Sétif">
+                               placeholder="e.g., Oran, Sétif" required>
                     </div>
 
                     <div class="form-group">
                         <label for="address">Detailed Address *</label>
-                        <textarea id="address" name="address" 
-                                  placeholder="Street, building number, floor, etc.">{% if profile %}{{ profile.address }}{% endif %}</textarea>
+                        <textarea id="address" name="address" rows="3"
+                                  placeholder="Street, building number, floor, etc." required>{% if profile %}{{ profile.address }}{% endif %}</textarea>
                     </div>
 
                     <!-- Map Section -->
                     <div class="map-instructions">
                         📍 <strong>Click on the map to select your exact location</strong> - This helps our delivery team find you easily!
                     </div>
-                    <div id="map"></div>
-                </div>
-
-                <!-- Stop Desk Selection (shown for stop desk option) -->
-                <div id="stop-desk-fields" style="display: none;">
-                    <div class="map-instructions">
-                        🏢 <strong>Select your nearest Stop Desk</strong> - Click on a marker to choose your pickup location
-                    </div>
-                    <div id="map-stop-desk"></div>
-                    
-                    <div class="stop-desk-info" id="selected-stop-desk">
-                        <h4>Selected Stop Desk</h4>
-                        <div class="stop-desk-detail">
-                            <strong>📍 Name:</strong>
-                            <span id="desk-name"></span>
-                        </div>
-                        <div class="stop-desk-detail">
-                            <strong>📫 Address:</strong>
-                            <span id="desk-address"></span>
-                        </div>
-                        <div class="stop-desk-detail">
-                            <strong>📞 Phone:</strong>
-                            <span id="desk-phone"></span>
-                        </div>
-                        <div class="stop-desk-detail">
-                            <strong>🕒 Hours:</strong>
-                            <span id="desk-hours"></span>
-                        </div>
-                    </div>
+                    <div id="map" style="height: 400px; border-radius: 10px; margin-top: 1rem;"></div>
                 </div>
                 
                 <!-- Hidden fields -->
                 <input type="hidden" id="latitude" name="latitude">
                 <input type="hidden" id="longitude" name="longitude">
                 <input type="hidden" id="shipping_cost" name="shipping_cost" value="0">
-                <input type="hidden" id="stop_desk_id" name="stop_desk_id" value="">
             </form>
         </div>
 
@@ -260,13 +230,6 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
-
-    <!-- Pass stop desks data to JavaScript -->
-    <script>
-        window.stopDesksData = {{ stop_desks_json|safe }};
-    </script>
-
-    <!-- Checkout Logic -->
     <script src="{% static 'JS/checkout.js' %}"></script>
 </body>
 </html>

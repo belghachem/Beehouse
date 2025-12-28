@@ -9,3 +9,16 @@ class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
     list_editable = ['price']
     ordering = ['category', 'name']
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('name', 'slug', 'category', 'quantity', 'price')
+        }),
+        ('Description', {
+            'fields': ('description',)
+        }),
+        ('Images', {
+            'fields': ('picture', 'picture_2', 'picture_3'),
+            'description': 'Upload up to 3 images for the product'
+        }),
+    )
