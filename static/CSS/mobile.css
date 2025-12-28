@@ -320,7 +320,7 @@
     /* Services & Featured Products */
     .our-services-content,
     .our-Featured-content {
-        flex-direction: column;
+        flex-direction: row;
         gap: 1.5rem;
         padding: 1rem;
     }
@@ -342,6 +342,77 @@
     .AboutUs-content p {
         font-size: 0.95rem;
     }
+    .forgot-password-container,
+    .login-container {
+        margin: 1rem;
+        border-radius: 15px;
+    }
+    
+    .reset-password-header,
+    .login-header {
+        padding: 2rem 1.5rem;
+    }
+    
+    .reset-password-header h1,
+    .login-header h1 {
+        font size: 1.6rem;
+    }
+    
+    .reset-password-header p,
+    .login-header p {
+        font size: 0.9rem;
+    }
+    
+    /* Mobile Input Code */
+    .code-input {
+        font size: 1.3rem !important;
+        letter-spacing: 0.3rem;
+        padding: 1.2rem 0.5rem !important;
+    }
+    
+    /* Progress Steps Mobile */
+    .progress-steps {
+        gap: 0.5rem;
+        padding: 1rem 0;
+    }
+    
+    .progress-step-circle {
+        width: 35px;
+        height: 35px;
+        font size: 0.9rem;
+    }
+    
+    .progress-step-circle::after {
+        width: 40px;
+    }
+    
+    .progress-step-label {
+        font size: 0.7rem;
+    }
+    
+    /* Password Hints Mobile */
+    .password-hint {
+        font size: 0.8rem;
+    }
+    
+    /* Resend Code Mobile */
+    .rend-code {
+        font size: 0.85rem;
+    }
+    
+    /* Back Button Mobile */
+    .back-to-login {
+        font size: 0.85rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Success Checkmark Mobile */
+    .success-checkmark {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 1rem;
+    }
+    
 }
 
 /* Small Mobile Devices */
@@ -426,6 +497,25 @@
     button:active {
         transform: scale(0.98);
     }
+    .reset-password-header h1,
+    .login-header h1 {
+        font size: 1.4rem;
+    }
+    
+    .code-input {
+        font size: 1.1rem !important;
+        letter-spacing: 0.2rem;
+    }
+    
+    .progress-step-circle {
+        width: 30px;
+        height: 30px;
+        font size: 0.8rem;
+    }
+    
+    .progress-step-circle::after {
+        width: 30px;
+    }
 }
 
 /* Fix for iOS Safari */
@@ -444,4 +534,15 @@ body {
 
 * {
     max-width: 100%;
+}
+.forgotten-password {
+    color: #d97706;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.forgotten-password:hover {
+    color: #f59e0b;
+    text-decoration: underline;
 }

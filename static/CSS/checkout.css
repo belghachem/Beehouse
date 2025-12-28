@@ -284,3 +284,43 @@
 .btn-secondary:hover {
     background: #d1d5db;
 }
+.info-box {
+    background: #e0f2fe;
+    border-left: 4px solid #0284c7;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: start;
+}
+
+.info-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.info-content {
+    flex: 1;
+}
+
+.info-content strong {
+    color: #0369a1;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.info-content p {
+    color: #075985;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.map-instructions {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 1rem;
+    border-radius: 8px;
+    color: #92400e;
+    font-size: 0.95rem;
+}

@@ -11,6 +11,11 @@ from twilio.rest import Client
 import random
 from django.conf import settings
 import logging
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.template.loader import render_to_string
+
 logger = logging.getLogger(__name__)
 
 def clean_phone_number(phone):
@@ -142,7 +147,8 @@ def register(request):
             return redirect('users:verify')
         except Exception as e:
             logger.error(f"Registration SMS failed: {str(e)}")
-             # Provide detailed error message
+            
+            # Provide detailed error message
             error_msg = str(e)
             if "Unable to create record" in error_msg:
                 messages.error(request, f'Invalid phone number format. Please use format: 0783927367')
@@ -156,7 +162,7 @@ def register(request):
                 messages.error(request, 'Phone number is not verified with Twilio. Please contact support.')
             else:
                 messages.error(request, f'Error sending SMS: {error_msg}')
-           
+            
             return redirect('users:register')
         
     return render(request, 'users/register.html')
@@ -265,6 +271,84 @@ def remove_from_wishlist(request, wishlist_id):
     wishlist_item.delete()
     
     messages.success(request, f'"{product_name}" removed from your wishlist.')
-
     return redirect('users:profile')
 
+
+def forgot_password(request):
+    """Handle forgot password request"""
+    if request.method == 'POST':
+        username_or_phone = request.POST.get('username_or_phone')
+        
+        try:
+            # Try to find user by username
+            user = User.objects.get(username=username_or_phone)
+        except User.DoesNotExist:
+            # Try to find by phone number
+            try:
+                profile = UserProfile.objects.get(phone=username_or_phone)
+                user = profile.user
+            except UserProfile.DoesNotExist:
+                messages.error(request, 'No account found with that username or phone number.')
+                return redirect('users:forgot_password')
+        
+        # Generate reset code
+        reset_code = str(random.randint(100000, 999999))
+        
+        # Store in session
+        request.session['reset_data'] = {
+            'user_id': user.id,
+            'reset_code': reset_code,
+        }
+        
+        # Send SMS
+        try:
+            profile = UserProfile.objects.get(user=user)
+            send_verification_sms(profile.phone, reset_code)
+            messages.success(request, f'Password reset code sent to your phone!')
+            return redirect('users:reset_password')
+        except Exception as e:
+            logger.error(f"Failed to send reset SMS: {str(e)}")
+            messages.error(request, 'Error sending verification code. Please try again.')
+            return redirect('users:forgot_password')
+    
+    return render(request, 'users/forgotten_password.html')
+
+
+def reset_password(request):
+    """Verify code and reset password"""
+    reset_data = request.session.get('reset_data')
+    if not reset_data:
+        messages.error(request, 'Password reset session expired. Please try again.')
+        return redirect('users:forgot_password')
+    
+    if request.method == 'POST':
+        code = request.POST.get('code')
+        new_password1 = request.POST.get('new_password1')
+        new_password2 = request.POST.get('new_password2')
+        
+        # Verify code
+        if code != reset_data['reset_code']:
+            messages.error(request, 'Invalid verification code.')
+            return render(request, 'users/reset_password.html')
+        
+        # Check passwords match
+        if new_password1 != new_password2:
+            messages.error(request, 'Passwords do not match!')
+            return render(request, 'users/reset_password.html')
+        
+        # Reset password
+        try:
+            user = User.objects.get(id=reset_data['user_id'])
+            user.set_password(new_password1)
+            user.save()
+            
+            # Clear session
+            del request.session['reset_data']
+            
+            messages.success(request, 'Password reset successfully! You can now login.')
+            return redirect('users:login')
+        except Exception as e:
+            logger.error(f"Error resetting password: {str(e)}")
+            messages.error(request, 'Error resetting password. Please try again.')
+    
+    return render(request, 'users/reset_password.html')

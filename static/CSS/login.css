@@ -129,14 +129,14 @@
     font-size: 0.9rem;
 }
 
-.forgot-password {
+.forgotten-password {
     color: #d97706;
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
 }
 
-.forgot-password:hover {
+.forgotten-password:hover {
     color: #f59e0b;
     text-decoration: underline;
 }
@@ -203,4 +203,380 @@
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+/* Forgot Password specific styles */
+.forgot-password-container {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(139, 115, 85, 0.3);
+    max-width: 450px;
+    width: 100%;
+    overflow: hidden;
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Reset Password specific header */
+.reset-password-header {
+    background: linear-gradient(135deg, #8B7355 0%, #6B5845 100%);
+    padding: 3rem 2.5rem;
+    text-align: center;
+    color: #fff;
+}
+
+.reset-password-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.reset-password-header p {
+    font-size: 0.95rem;
+    opacity: 0.95;
+    line-height: 1.5;
+}
+
+/* Code Input Styling */
+.code-input {
+    text-align: center;
+    letter-spacing: 0.5rem;
+    font-size: 1.5rem !important;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+}
+
+.code-input:focus {
+    border-color: #8B7355;
+    box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
+}
+
+/* Password Strength Indicator */
+.password-strength {
+    margin-top: 0.5rem;
+    height: 4px;
+    background: #e5e7eb;
+    border-radius: 2px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.password-strength-bar {
+    height: 100%;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.password-strength-weak {
+    width: 33%;
+    background: #ef4444;
+}
+
+.password-strength-medium {
+    width: 66%;
+    background: #f59e0b;
+}
+
+.password-strength-strong {
+    width: 100%;
+    background: #10b981;
+}
+
+.password-hint {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.password-hint.valid {
+    color: #10b981;
+}
+
+.password-hint.invalid {
+    color: #ef4444;
+}
+
+/* Resend Code Link */
+.resend-code {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.resend-code button {
+    background: none;
+    border: none;
+    color: #d97706;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.resend-code button:hover {
+    color: #f59e0b;
+}
+
+.resend-code button:disabled {
+    color: #999;
+    cursor: not-allowed;
+    text-decoration: none;
+}
+
+/* Timer Display */
+.timer {
+    display: inline-block;
+    font-weight: 700;
+    color: #d97706;
+    margin-left: 0.25rem;
+}
+
+/* Success Animation */
+.success-checkmark {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 3;
+    stroke: #10b981;
+    stroke-miterlimit: 10;
+    box-shadow: inset 0px 0px 0px #10b981;
+    animation: fill 0.4s ease-in-out 0.4s forwards, scale 0.3s ease-in-out 0.9s both;
+}
+
+.success-checkmark-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 3;
+    stroke-miterlimit: 10;
+    stroke: #10b981;
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.success-checkmark-check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke {
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes scale {
+    0%, 100% {
+        transform: none;
+    }
+    50% {
+        transform: scale3d(1.1, 1.1, 1);
+    }
+}
+
+@keyframes fill {
+    100% {
+        box-shadow: inset 0px 0px 0px 30px #10b981;
+    }
+}
+
+/* Enhanced Alert Messages */
+.alert {
+    position: relative;
+    padding: 1rem 1rem 1rem 3rem;
+}
+
+.alert::before {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+}
+
+.alert-error::before {
+    content: '⚠️';
+}
+
+.alert-success::before {
+    content: '✅';
+}
+
+.alert-info {
+    background: #dbeafe;
+    color: #1e40af;
+    border-left: 4px solid #3b82f6;
+    display: block;
+}
+
+.alert-info::before {
+    content: 'ℹ️';
+}
+
+/* Back Button */
+.back-to-login {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #666;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.back-to-login:hover {
+    color: #d97706;
+    transform: translateX(-5px);
+}
+
+.back-to-login::before {
+    content: '<-';
+    font-size: 1.2rem;
+}
+
+/* Progress Steps */
+.progress-steps {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem 0;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+}
+
+.progress-step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.progress-step.active .progress-step-circle {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+.progress-step.completed .progress-step-circle {
+    background: #10b981;
+    color: #fff;
+}
+
+.progress-step-circle::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 60px;
+    height: 2px;
+    background: #e5e7eb;
+    transform: translateY(-50%);
+    z-index: -1;
+}
+
+.progress-step:last-child .progress-step-circle::after {
+    display: none;
+}
+
+.progress-step.completed .progress-step-circle::after {
+    background: #10b981;
+}
+
+.progress-step-label {
+    font-size: 0.75rem;
+    color: #666;
+    font-weight: 600;
+}
+
+.progress-step.active .progress-step-label {
+    color: #d97706;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* Enhanced Input Focus States */
+.form-group input:focus + .input-icon {
+    color: #d97706;
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Shake Animation for Errors */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.input-error {
+    animation: shake 0.5s;
+    border-color: #ef4444 !important;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.pulse {
+    animation: pulse 2s ease-in-out infinite;
 }

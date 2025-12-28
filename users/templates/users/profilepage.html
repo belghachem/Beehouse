@@ -1,32 +1,33 @@
 {% load static %}
 <!DOCTYPE html>
-    <html>
-        <head>
-            <title>Bee House</title>
-            <link rel="stylesheet" type="text/CSS" href="{% static 'CSS/profile-page_stylesheet.css' %}"/>
-            <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
-            <meta charset="utf-8"/>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="preconnect" href="https://fonts.googleapis.com">
-            <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet">
-            <link rel="stylesheet" href="{% static 'CSS/mobile.css' %}">
+<html>
+<head>
+    <title>Bee House</title>
+    <link rel="stylesheet" type="text/CSS" href="{% static 'CSS/profile-page_stylesheet.css' %}"/>
+    <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'CSS/mobile.css' %}">
 </head>
-    <body>
+<body>
     <div class="header">
-        <div class="logo"><img  class="beelogo" src="{% static 'Images/BEEBLACK.png' %}"> </div>
-    <section class="nav-bar">
-            
+        <div class="logo"><img class="beelogo" src="{% static 'Images/BEEBLACK.png' %}"></div>
+        <section class="nav-bar">
             <ol>
                 <li><a href="{% url 'home:home_page' %}"><button class="nav-bar-button">Home</button></a></li>
                 <li><a href="{% url 'products:product_page' %}"><button class="nav-bar-button">Products</button></a></li>
                 <li><a href="{% url 'contactus:contact' %}"><button class="nav-bar-button">Contact-us</button></a></li>
             </ol>
-    <div class="profile">
-        <a href="{% url 'users:profile' %}"><img src="{% static 'Images/user_icon-profile.png' %}" alt="user-profile" class="user-profile">
-        </a></div>
-    </section>
+            <div class="profile">
+                <a href="{% url 'users:profile' %}">
+                    <img src="{% static 'Images/user_icon-profile.png' %}" alt="user-profile" class="user-profile">
+                </a>
+            </div>
+        </section>
     </div>
-<div class="divider"></div>
+    <div class="divider"></div>
 
     <!-- Dashboard Section -->
     <section class="dashboard-section">
@@ -42,15 +43,15 @@
                     <div class="user-profile-card">
                         <div class="profile-avatar">
                             {% if profile.profile_picture %}
-                                <img src="{{ profile.profile_picture.url }}" alt="Profile" class="avatar-img">
+                                <img src="{{ profile.profile_picture.url }}" alt="Profile" class="avatar-img" id="avatar-preview">
                             {% else %}
-                                <img src="{% static 'Images/user_icon-profile.png' %}" alt="Profile" class="avatar-img">
+                                <img src="{% static 'Images/user_icon-profile.png' %}" alt="Profile" class="avatar-img" id="avatar-preview">
                             {% endif %}
-                            <button class="change-avatar-btn" onclick="document.getElementById('profile-pic-input').click()">Change Photo</button>
-                            <input type="file" id="profile-pic-input" style="display: none;" accept="image/*">
+                            <button type="button" class="change-avatar-btn" onclick="document.getElementById('profile-pic-input').click()">Change Photo</button>
                         </div>
                         <h3 class="profile-name">{{ user.get_full_name|default:user.username }}</h3>
                         <p class="profile-phone">{{ profile.phone|default:"+213 XXX XXX XXX" }}</p>
+                        <p class="profile-phone"><strong>⚠ Unsaved Changes!</strong> You have unsaved changes. Please click "Save Changes" to update your profile.<p>
                     </div>
                     
                     <nav class="dashboard-nav">
@@ -98,7 +99,6 @@
                                 <div class="alert alert-{{ message.tags }}">{{ message }}</div>
                             {% endfor %}
                         {% endif %}
-                        
                         <form class="profile-form" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="form-row">
@@ -122,9 +122,11 @@
                                 <textarea rows="3" name="address">{{ profile.address }}</textarea>
                             </div>
                             
-                            <input type="file" name="profile_picture" style="display: none;">
+                            <input type="file" name="profile_picture" id="profile-pic-input" style="display: none;" accept="image/*">
                             
-                            <button type="submit" class="save-btn">Save Changes</button>
+                            <button type="submit" class="save-btn" id="saveBtn">
+                                💾 Save Changes
+                            </button>
                         </form>
                     </div>
 
@@ -159,20 +161,27 @@
                         </div>
                     </div>
 
-                    <!-- Wishlist Section -->
+                    <!-- Wishlist Section - FIXED IMAGE ERROR -->
                     <div class="dashboard-section-content" id="wishlist">
                         <h3>My Wishlist</h3>
                         <div class="wishlist-grid">
                             {% for item in wishlist_items %}
                             <div class="wishlist-item">
-                                <img src="{% static 'Images/jarofhoney.jpg' %}{{ item.product.image.url }}" alt="{{ item.product.name }}" class="wishlist-img">
+                                <!-- FIXED: Check if picture exists before accessing .url -->
+                                {% if item.product.picture %}
+                                    <img src="{{ item.product.picture.url }}" alt="{{ item.product.name }}" class="wishlist-img">
+                                {% else %}
+                                    <img src="{% static 'Images/jarofhoney.jpg' %}" alt="{{ item.product.name }}" class="wishlist-img">
+                                {% endif %}
+                                
                                 <div class="wishlist-info">
                                     <h4>{{ item.product.name }}</h4>
                                     <p class="wishlist-price">{{ item.product.price|floatformat:0 }} DA</p>
                                     <div class="wishlist-actions">
-                                        <a href="{% url 'cart:add_to_cart' item.product.id %}">
-                                            <button class="wishlist-btn btn-cart">Add to Cart</button>
-                                        </a>
+                                        <form action="{% url 'cart:add_to_cart' item.product.id %}" method="POST" style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="wishlist-btn btn-cart">Add to Cart</button>
+                                        </form>
                                         <a href="{% url 'users:remove_from_wishlist' item.id %}">
                                             <button class="wishlist-btn btn-remove">Remove</button>
                                         </a>
@@ -188,5 +197,27 @@
             </div>
         </div>
     </section>
+    
+    <script>
+        // Profile picture preview and upload
+        const profilePicInput = document.getElementById('profile-pic-input');
+        const avatarPreview = document.getElementById('avatar-preview');
+        const profileForm = document.querySelector('.profile-form');
+
+        profilePicInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Preview the image
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    avatarPreview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+                
+                // Auto-submit the form to save the profile picture
+                profileForm.submit();
+            }
+        });
+    </script>
 </body>
 </html>
