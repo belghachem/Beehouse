@@ -9,9 +9,9 @@ class Product(models.Model):
     quantity = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField(blank=True)
-    picture =CloudinaryField('picture')
-    picture_2 = CloudinaryField('picture_2')
-    picture_3 =CloudinaryField('picture_3')
+    picture =CloudinaryField('picture',blank=True, null=True)
+    picture_2 = CloudinaryField('picture_2',blank=True, null=True)
+    picture_3 =CloudinaryField('picture_3',blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     
@@ -41,3 +41,4 @@ class Product(models.Model):
             images.append(self.picture_3.url)
 
         return images if images else ['/static/Images/jarofhoney.jpg']
+
