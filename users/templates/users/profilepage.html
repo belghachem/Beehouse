@@ -51,7 +51,7 @@
                         </div>
                         <h3 class="profile-name">{{ user.get_full_name|default:user.username }}</h3>
                         <p class="profile-phone">{{ profile.phone|default:"+213 XXX XXX XXX" }}</p>
-                        <p class="profile-phone"><strong>⚠ Unsaved Changes!</strong> You have unsaved changes. Please click "Save Changes" to update your profile.<p>
+                        <p class="profile-phone">*You have unsaved changes. Please click "Save Changes" to update your profile.<p>
                     </div>
                     
                     <nav class="dashboard-nav">
@@ -215,9 +215,10 @@
                 reader.readAsDataURL(file);
                 
                 // Auto-submit the form to save the profile picture
-                profileForm.submit();
+                //profileForm.submit();
             }
         });
     </script>
 </body>
+
 </html>
