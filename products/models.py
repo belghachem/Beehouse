@@ -42,4 +42,12 @@ class Product(models.Model):
             images.append(self.picture_3.url)
 
         return images if images else ['/static/Images/jarofhoney.jpg']
+     def get_total_orders(self):
+        """Get total number of times this product has been ordered"""
+        from orders.models import OrderItem
+        return OrderItem.objects.filter(product=self).aggregate(
+            total=models.Sum('quantity')
+        )['total'] or 0
+    
+    get_total_orders.short_description = "Total Orders"
 
