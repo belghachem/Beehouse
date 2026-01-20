@@ -1,0 +1,282 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrastyle %}
+<style>
+    .dashboard-container {
+        padding: 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-left: 4px solid #417690;
+    }
+    
+    .stat-card h3 {
+        margin: 0 0 10px 0;
+        color: #666;
+        font-size: 14px;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+    
+    .stat-value {
+        font-size: 32px;
+        font-weight: bold;
+        color: #417690;
+        margin: 10px 0;
+    }
+    
+    .stat-label {
+        font-size: 12px;
+        color: #999;
+    }
+    
+    .chart-container {
+        background: white;
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .chart-container h2 {
+        margin: 0 0 20px 0;
+        color: #417690;
+        font-size: 18px;
+    }
+    
+    .chart-wrapper {
+        position: relative;
+        height: 300px;
+    }
+    
+    .popular-pages {
+        background: white;
+        border-radius: 8px;
+        padding: 25px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .popular-pages h2 {
+        margin: 0 0 20px 0;
+        color: #417690;
+        font-size: 18px;
+    }
+    
+    .page-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .page-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        align-items: center;
+    }
+    
+    .page-item:last-child {
+        border-bottom: none;
+    }
+    
+    .page-url {
+        color: #417690;
+        font-weight: 500;
+        flex: 1;
+    }
+    
+    .page-count {
+        background: #417690;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    
+    .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #417690;
+        text-decoration: none;
+    }
+    
+    .back-link:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <a href="{% url 'admin:home_visitor_changelist' %}" class="back-link">← Back to Visitor List</a>
+    
+    <h1 style="margin-bottom: 30px; color: #417690;">📊 Visitor Statistics Dashboard</h1>
+    
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Today's Visits</h3>
+            <div class="stat-value">{{ today_total }}</div>
+            <div class="stat-label">Total page views today</div>
+        </div>
+        
+        <div class="stat-card">
+            <h3>Today's Unique Visitors</h3>
+            <div class="stat-value">{{ today_unique }}</div>
+            <div class="stat-label">Unique IP addresses</div>
+        </div>
+        
+        <div class="stat-card">
+            <h3>This Month's Visits</h3>
+            <div class="stat-value">{{ month_total }}</div>
+            <div class="stat-label">Total page views this month</div>
+        </div>
+        
+        <div class="stat-card">
+            <h3>This Month's Unique Visitors</h3>
+            <div class="stat-value">{{ month_unique }}</div>
+            <div class="stat-label">Unique IP addresses</div>
+        </div>
+    </div>
+    
+    <!-- Last 7 Days Chart -->
+    <div class="chart-container">
+        <h2>📈 Last 7 Days Visitor Trend</h2>
+        <div class="chart-wrapper">
+            <canvas id="chart7Days"></canvas>
+        </div>
+    </div>
+    
+    <!-- Last 30 Days Chart -->
+    <div class="chart-container">
+        <h2>📈 Last 30 Days Visitor Trend</h2>
+        <div class="chart-wrapper">
+            <canvas id="chart30Days"></canvas>
+        </div>
+    </div>
+    
+    <!-- Popular Pages -->
+    <div class="popular-pages">
+        <h2>🔥 Most Visited Pages</h2>
+        <ul class="page-list">
+            {% for page in popular_pages %}
+            <li class="page-item">
+                <span class="page-url">{{ page.page_visited }}</span>
+                <span class="page-count">{{ page.visit_count }} visits</span>
+            </li>
+            {% empty %}
+            <li class="page-item">
+                <span class="page-url">No data available yet</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    // Parse data from Django
+    const data7Days = JSON.parse('{{ chart_data_7_days|safe }}');
+    const data30Days = JSON.parse('{{ chart_data_30_days|safe }}');
+    
+    // Chart configuration
+    const chartConfig = {
+        type: 'line',
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    };
+    
+    // Last 7 Days Chart
+    const ctx7Days = document.getElementById('chart7Days').getContext('2d');
+    new Chart(ctx7Days, {
+        ...chartConfig,
+        data: {
+            labels: data7Days.labels,
+            datasets: [
+                {
+                    label: 'Total Visits',
+                    data: data7Days.total,
+                    borderColor: '#417690',
+                    backgroundColor: 'rgba(65, 118, 144, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Unique Visitors',
+                    data: data7Days.unique,
+                    borderColor: '#79aec8',
+                    backgroundColor: 'rgba(121, 174, 200, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }
+            ]
+        }
+    });
+    
+    // Last 30 Days Chart
+    const ctx30Days = document.getElementById('chart30Days').getContext('2d');
+    new Chart(ctx30Days, {
+        ...chartConfig,
+        data: {
+            labels: data30Days.labels,
+            datasets: [
+                {
+                    label: 'Total Visits',
+                    data: data30Days.total,
+                    borderColor: '#417690',
+                    backgroundColor: 'rgba(65, 118, 144, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Unique Visitors',
+                    data: data30Days.unique,
+                    borderColor: '#79aec8',
+                    backgroundColor: 'rgba(121, 174, 200, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }
+            ]
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "admin/change_list.html" %}
+
+{% block content %}
+<div style="margin: 0 0 20px 0;">
+    <a href="/znd/home/visitor/dashboard/" 
+       class="button" 
+       style="background: #417690; 
+              color: white; 
+              padding: 12px 24px; 
+              border-radius: 5px; 
+              text-decoration: none; 
+              font-weight: bold;
+              font-size: 14px;
+              display: inline-block;
+              margin-bottom: 10px;">
+        📊 View Visitor Dashboard
+    </a>
+</div>
+{{ block.super }}
+{% endblock %}
