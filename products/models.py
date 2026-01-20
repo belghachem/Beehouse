@@ -9,13 +9,12 @@ class Product(models.Model):
     quantity = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField(blank=True)
-    view_count = models.IntegerField(default=0, blank=True, null=True)
     picture =CloudinaryField('picture',blank=True, null=True)
     picture_2 = CloudinaryField('picture_2',blank=True, null=True)
     picture_3 =CloudinaryField('picture_3',blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
-    
+    view_count = models.IntegerField(default=0, blank=True, null=True)
     class Meta:
         ordering = ['-created_at'] 
         indexes = [
@@ -51,3 +50,4 @@ class Product(models.Model):
         )['total'] or 0
     
     get_total_orders.short_description = "Total Orders"
+
