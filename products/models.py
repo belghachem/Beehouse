@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from cloudinary.models import CloudinaryField
+
 class Product(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True, null=True) 
@@ -8,10 +9,10 @@ class Product(models.Model):
     quantity = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField(blank=True)
-    picture = models.ImageField(upload_to='products/', blank=True, null=True)
-    picture_2 = models.ImageField(upload_to='products/', blank=True, null=True)
-    picture_3 = models.ImageField(upload_to='products/', blank=True, null=True)
     view_count = models.IntegerField(default=0, blank=True, null=True)
+    picture =CloudinaryField('picture',blank=True, null=True)
+    picture_2 = CloudinaryField('picture_2',blank=True, null=True)
+    picture_3 =CloudinaryField('picture_3',blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     
@@ -20,7 +21,6 @@ class Product(models.Model):
         indexes = [
             models.Index(fields=['category']),
             models.Index(fields=['slug']),
-            models.Index(fields=['-view_count']),
         ]
     
     def save(self, *args, **kwargs):
@@ -40,14 +40,6 @@ class Product(models.Model):
             images.append(self.picture_2.url)
         if self.picture_3:
             images.append(self.picture_3.url)
+
         return images if images else ['/static/Images/jarofhoney.jpg']
-    
-    def get_total_orders(self):
-        """Get total number of times this product has been ordered"""
-        from orders.models import OrderItem
-        return OrderItem.objects.filter(product=self).aggregate(
-            total=models.Sum('quantity')
-        )['total'] or 0
-    
-    get_total_orders.short_description = "Total Orders"
 
