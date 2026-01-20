@@ -7,11 +7,11 @@ from orders.models import OrderItem
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
    list_display = ['name', 'category', 'quantity', 'price', 'slug', 'view_count', 'total_ordered']
-    list_filter = ['category']
-    search_fields = ['name', 'description']
-    prepopulated_fields = {'slug': ('name',)}
-    list_editable = ['price']
-    ordering = ['category', 'name']
+   list_filter = ['category']
+   search_fields = ['name', 'description']
+   prepopulated_fields = {'slug': ('name',)}
+   list_editable = ['price']
+   ordering = ['category', 'name']
     
     fieldsets = (
         ('Basic Information', {
@@ -86,5 +86,6 @@ class ProductStatisticsAdmin(admin.ModelAdmin):
     
     total_ordered.short_description = 'Total Ordered'
     total_ordered.admin_order_field = 'total_ordered'
+
 
 
