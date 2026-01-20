@@ -3,6 +3,7 @@ import os
 import dj_database_url
 from decouple import config
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 # Build paths
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -178,3 +179,4 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
 }
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
