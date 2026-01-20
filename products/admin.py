@@ -13,21 +13,21 @@ class ProductAdmin(admin.ModelAdmin):
    list_editable = ['price']
    ordering = ['category', 'name']
     
-    fieldsets = (
-        ('Basic Information', {
-            'fields': ('name', 'slug', 'category', 'quantity', 'price')
-        }),
-        ('Details', {
-            'fields': ('description',)
-        }),
-        ('Images', {
-            'fields': ('picture', 'picture_2', 'picture_3')
-        }),
-        ('Statistics', {
-            'fields': ('view_count', 'created_at', 'updated_at'),
-            'classes': ('collapse',)
-        }),
-    )
+   fieldsets = (
+      ('Basic Information', {
+         'fields': ('name', 'slug', 'category', 'quantity', 'price')
+      }),
+      ('Details', {
+         'fields': ('description',)
+      }),
+      ('Images', {
+         'fields': ('picture', 'picture_2', 'picture_3')
+      }),
+      ('Statistics', {
+         'fields': ('view_count', 'created_at', 'updated_at'),
+         'classes': ('collapse',)
+      }),
+   )
     
     def total_ordered(self, obj):
         """Display total quantity ordered for this product"""
@@ -86,6 +86,7 @@ class ProductStatisticsAdmin(admin.ModelAdmin):
     
     total_ordered.short_description = 'Total Ordered'
     total_ordered.admin_order_field = 'total_ordered'
+
 
 
 
