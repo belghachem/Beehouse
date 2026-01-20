@@ -14,7 +14,6 @@ class Product(models.Model):
     picture_3 =CloudinaryField('picture_3',blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
-    view_count = models.IntegerField(default=0, blank=True, null=True)
     class Meta:
         ordering = ['-created_at'] 
         indexes = [
@@ -50,4 +49,5 @@ class Product(models.Model):
         )['total'] or 0
     
     get_total_orders.short_description = "Total Orders"
+
 
