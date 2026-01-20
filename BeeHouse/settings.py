@@ -10,7 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = False
 
 # Authentication
 LOGIN_URL = 'users:login'
@@ -18,9 +18,7 @@ LOGIN_REDIRECT_URL = 'home:home_page'
 LOGOUT_REDIRECT_URL = 'home:home_page'
 
 # Allowed hosts
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
-
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
 
 # Database
 DATABASES = {
@@ -37,9 +35,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',
-    'cloudinary',
     'django.contrib.staticfiles',
+    'cloudinary_storage',
+    'cloudinary',  
     'products',
     'cart',
     'orders',
@@ -57,7 +55,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'home.middleware.VisitorTrackingMiddleware',
 ]
 
 ROOT_URLCONF = 'BeeHouse.urls'
@@ -125,8 +122,8 @@ if not DEBUG:
     
     # CSRF trusted origins (update with your domain)
     CSRF_TRUSTED_ORIGINS = [
-        'https://beehouse-tv-2.onrender.com',
-        'https://www.beehouse-tv-2.onrender.com',
+        'https://beehouse-0s4k.onrender.com',
+        'https://www.beehouse-0s4k.onrender.com',
     ]
 else:
     # Development settings
@@ -171,12 +168,15 @@ LOGGING = {
             'propagate': True,
         },
     },
+
 }
 import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+    'CLOUD_NAME' : os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY' : os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET' : os.environ.get('CLOUDINARY_API_SECRET'),
+    'SECURE' : os.environ.get('CLOUDINARY_SECURE'),
 }
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
