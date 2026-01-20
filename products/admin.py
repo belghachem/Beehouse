@@ -6,28 +6,27 @@ from orders.models import OrderItem
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-   list_display = ['name', 'category', 'quantity', 'price', 'slug', 'view_count', 'total_ordered']
-   list_filter = ['category']
-   search_fields = ['name', 'description']
-   prepopulated_fields = {'slug': ('name',)}
-   list_editable = ['price']
-   ordering = ['category', 'name']
+    list_display = ['name', 'category', 'slug', 'price', 'view_count', 'total_ordered', 'created_at']
+    list_filter = ['category', 'created_at']
+    search_fields = ['name', 'description', 'category']
+    readonly_fields = ['view_count', 'created_at', 'updated_at', 'slug']
+    prepopulated_fields = {'slug': ('name',)}
     
-   fieldsets = (
-      ('Basic Information', {
-         'fields': ('name', 'slug', 'category', 'quantity', 'price')
-      }),
-      ('Details', {
-         'fields': ('description',)
-      }),
-      ('Images', {
-         'fields': ('picture', 'picture_2', 'picture_3')
-      }),
-      ('Statistics', {
-         'fields': ('view_count', 'created_at', 'updated_at'),
-         'classes': ('collapse',)
-      }),
-   )
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('name', 'slug', 'category', 'quantity', 'price')
+        }),
+        ('Details', {
+            'fields': ('description',)
+        }),
+        ('Images', {
+            'fields': ('picture', 'picture_2', 'picture_3')
+        }),
+        ('Statistics', {
+            'fields': ('view_count', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
     
     def total_ordered(self, obj):
         """Display total quantity ordered for this product"""
@@ -86,6 +85,7 @@ class ProductStatisticsAdmin(admin.ModelAdmin):
     
     total_ordered.short_description = 'Total Ordered'
     total_ordered.admin_order_field = 'total_ordered'
+
 
 
 
