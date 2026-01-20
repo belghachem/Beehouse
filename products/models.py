@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
-
+from cloudinary.models import CloudinaryField
 class Product(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True, null=True) 
@@ -50,3 +50,4 @@ class Product(models.Model):
         )['total'] or 0
     
     get_total_orders.short_description = "Total Orders"
+
