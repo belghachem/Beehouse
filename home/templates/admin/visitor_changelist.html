@@ -2,8 +2,7 @@
 
 {% block content %}
 <div style="margin: 0 0 20px 0;">
-    <a href="/znd/home/visitor/dashboard/" 
-       class="button" 
+    <a href="{% url 'admin:visitor_dashboard' %}" 
        style="background: #417690; 
               color: white; 
               padding: 12px 24px; 
@@ -12,9 +11,17 @@
               font-weight: bold;
               font-size: 14px;
               display: inline-block;
-              margin-bottom: 10px;">
+              box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
         📊 View Visitor Dashboard
     </a>
 </div>
 {{ block.super }}
+
+<style>
+    a[href*="visitor_dashboard"]:hover {
+        background: #2d5366 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3) !important;
+    }
+</style>
 {% endblock %}
