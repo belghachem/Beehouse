@@ -1,5 +1,4 @@
 {% extends "admin/base_site.html" %}
-{% load static %}
 
 {% block extrastyle %}
 <style>
@@ -191,11 +190,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-    // Parse data from Django
     const data7Days = JSON.parse('{{ chart_data_7_days|safe }}');
     const data30Days = JSON.parse('{{ chart_data_30_days|safe }}');
     
-    // Chart configuration
     const chartConfig = {
         type: 'line',
         options: {
