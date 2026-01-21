@@ -55,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'home.middleware.VisitorTrackingMiddleware',
 ]
 
 ROOT_URLCONF = 'BeeHouse.urls'
@@ -180,5 +181,6 @@ CLOUDINARY_STORAGE = {
     'API_SECRET' : os.environ.get('CLOUDINARY_API_SECRET'),
     'SECURE' : os.environ.get('CLOUDINARY_SECURE'),
 }
+
 
 
