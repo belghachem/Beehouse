@@ -9,9 +9,10 @@ class Product(models.Model):
     quantity = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField(blank=True)
-    picture =CloudinaryField('picture',blank=True, null=True)
-    picture_2 = CloudinaryField('picture_2',blank=True, null=True)
-    picture_3 =CloudinaryField('picture_3',blank=True, null=True)
+    picture = CloudinaryField('picture', blank=True, null=True)
+    picture_2 = CloudinaryField('picture_2', blank=True, null=True)
+    picture_3 = CloudinaryField('picture_3', blank=True, null=True)
+    view_count = models.IntegerField(default=0, help_text="Number of times viewed")  # NEW
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     
@@ -20,6 +21,7 @@ class Product(models.Model):
         indexes = [
             models.Index(fields=['category']),
             models.Index(fields=['slug']),
+            models.Index(fields=['-view_count']),  # NEW - for performance
         ]
     
     def save(self, *args, **kwargs):
@@ -39,6 +41,12 @@ class Product(models.Model):
             images.append(self.picture_2.url)
         if self.picture_3:
             images.append(self.picture_3.url)
-
         return images if images else ['/static/Images/jarofhoney.jpg']
-
+    
+    def get_total_ordered(self):
+        """Get total quantity ordered for this product"""
+        from orders.models import OrderItem
+        total = OrderItem.objects.filter(product=self).aggregate(
+            total=models.Sum('quantity')
+        )['total']
+        return total if total else 0
