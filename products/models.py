@@ -12,7 +12,7 @@ class Product(models.Model):
     picture = CloudinaryField('picture', blank=True, null=True)
     picture_2 = CloudinaryField('picture_2', blank=True, null=True)
     picture_3 = CloudinaryField('picture_3', blank=True, null=True)
-    view_count = models.IntegerField(default=0, help_text="Number of times viewed")  # NEW
+    view_count = models.IntegerField(default=0, help_text="Number of times viewed")
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     
@@ -21,7 +21,7 @@ class Product(models.Model):
         indexes = [
             models.Index(fields=['category']),
             models.Index(fields=['slug']),
-            models.Index(fields=['-view_count']),  # NEW - for performance
+            models.Index(fields=['-view_count']),
         ]
     
     def save(self, *args, **kwargs):
@@ -50,3 +50,4 @@ class Product(models.Model):
             total=models.Sum('quantity')
         )['total']
         return total if total else 0
+
