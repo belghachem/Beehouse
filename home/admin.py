@@ -11,7 +11,7 @@ class VisitorAdmin(admin.ModelAdmin):
     search_fields = ['ip_address', 'page_visited']
     readonly_fields = ['ip_address', 'user_agent', 'page_visited', 'referrer', 'session_key', 'visited_at']
     date_hierarchy = 'visited_at'
-    
+    change_list_template = 'admin/visitor_changelist.html'
     # Read-only model
     def has_add_permission(self, request):
         return False
@@ -77,3 +77,4 @@ class VisitorAdmin(admin.ModelAdmin):
 admin.site.site_header = "BeeHouse Admin"
 admin.site.site_title = "BeeHouse Admin Portal"
 admin.site.index_title = "Welcome to BeeHouse Administration"
+
