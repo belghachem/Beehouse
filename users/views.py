@@ -2,12 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import UserProfile, Wishlist
+from .models import UserProfile, Wishlist, SMSMessage  # ADD SMSMessage here
 from products.models import Product
 from orders.models import Order
 from django.contrib.auth.models import User
 from django.db.models import Sum
-from twilio.rest import Client
 import random
 from django.conf import settings
 import logging
@@ -34,45 +33,28 @@ def clean_phone_number(phone):
     return phone
 
 def send_verification_sms(phone, code):
-    """Send SMS verification code"""
+    """Send SMS - creates message in database, Android phone will send it"""
     try:
-        # Check if we have API Key credentials
-        if hasattr(settings, 'SMS_API_KEY_SID') and settings.SMS_API_KEY_SID:
-            # Using API Key (more secure)
-            client = Client(
-                settings.SMS_API_KEY_SID,
-                settings.SMS_API_KEY_SECRET,
-                settings.SMS_ACCOUNT_SID
-            )
-            logger.info("Using Twilio API Key authentication")
-        else:
-            # Using Auth Token
-            client = Client(
-                settings.SMS_ACCOUNT_SID,
-                settings.SMS_AUTH_TOKEN
-            )
-            logger.info("Using Twilio Auth Token authentication")
-        
         # Clean phone number
         phone = clean_phone_number(phone)
-        logger.info(f"Sending SMS to: {phone}")
+        logger.info(f"Creating SMS for: {phone}")
         
-        # Send message
-        message = client.messages.create(
-            body=f"Your Bee House verification code is: {code} 🐝",
-            from_=settings.SMS_TWILIO_NUMBER,
-            to=phone
+        # Create SMS message in database
+        # Your Android phone will fetch and send it
+        sms = SMSMessage.objects.create(
+            phone_number=phone,
+            message=f"Your Bee House verification code is: {code} 🐝",
+            status='pending'
         )
         
-        logger.info(f"SMS feels successfully. SID: {message.sid}")
+        logger.info(f"SMS queued successfully. ID: {sms.id}")
         return True
         
     except Exception as e:
         logger.error(f"SMS Error: {str(e)}")
-        logger.error(f"Phone number: {phone}")
-        logger.error(f"Twilio Number: {settings.SMS_TWILIO_NUMBER}")
         raise e
 
+# Keep all your other functions exactly the same
 def verify(request):
     reg_data = request.session.get('reg_data')
     if not reg_data:
@@ -84,7 +66,6 @@ def verify(request):
         
         if user_input_code == reg_data['verification_code']:
             try:
-                # Create the actual user now
                 user = User.objects.create_user(
                     username=reg_data['username'],
                     password=reg_data['password'],
@@ -96,7 +77,7 @@ def verify(request):
                     phone=reg_data['phone'],
                     address=reg_data['address']
                 )
-                del request.session['reg_data']  # Clear session
+                del request.session['reg_data']
                 messages.success(request, 'Account verified successfully! You can now login.')
                 return redirect('users:login')
             except Exception as e:
@@ -117,7 +98,6 @@ def register(request):
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
         
-        # Validation
         if password1 != password2:
             messages.error(request, 'Passwords do not match!')
             return redirect('users:register')
@@ -126,10 +106,8 @@ def register(request):
             messages.error(request, 'Username already exists!')
             return redirect('users:register')
 
-        # Generate verification code
         verification_code = str(random.randint(100000, 999999))
         
-        # Save data in session temporarily
         request.session['reg_data'] = {
             'username': username,
             'first_name': first_name,
@@ -140,34 +118,17 @@ def register(request):
             'verification_code': verification_code
         }
 
-        # Try to send SMS
         try:
             send_verification_sms(phone, verification_code)
             messages.success(request, f'Verification code sent to {phone}!')
             return redirect('users:verify')
         except Exception as e:
             logger.error(f"Registration SMS failed: {str(e)}")
-            
-            # Provide detailed error message
-            error_msg = str(e)
-            if "Unable to create record" in error_msg:
-                messages.error(request, f'Invalid phone number format. Please use format: 0783927367')
-            elif "authenticate" in error_msg.lower():
-                messages.error(request, 'SMS service configuration error. Please contact support.')
-            elif "20003" in error_msg:
-                messages.error(request, 'Twilio authentication failed. Please contact support.')
-            elif "21211" in error_msg:
-                messages.error(request, f'Invalid phone number: {phone}. Please check and try again.')
-            elif "21608" in error_msg:
-                messages.error(request, 'Phone number is not verified with Twilio. Please contact support.')
-            else:
-                messages.error(request, f'Error sending SMS: {error_msg}')
-            
+            messages.error(request, f'Error sending SMS. Please try again.')
             return redirect('users:register')
         
     return render(request, 'users/register.html')
 
-# Login View
 def user_login(request):
     if request.user.is_authenticated:
         return redirect('home:home_page')
@@ -182,7 +143,6 @@ def user_login(request):
             login(request, user)
             messages.success(request, f'Welcome back, {user.first_name}!')
             
-            # Redirect to next page or home
             next_page = request.GET.get('next', 'home:home_page')
             return redirect(next_page)
         else:
@@ -190,33 +150,27 @@ def user_login(request):
     
     return render(request, 'users/login.html')
 
-# Logout View
 def user_logout(request):
     logout(request)
     messages.success(request, 'You have been logged out successfully.')
     return redirect('home:home_page')
-# Profile
+
 @login_required
 def profile(request):
     if request.user.is_superuser:
         return redirect('/znd/')
-    # Get or create user profile
+    
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     
-    # Get statistics
     from orders.models import Order
     total_orders = Order.objects.filter(user=request.user).count()
     pending_orders = Order.objects.filter(user=request.user, status='pending').count()
     total_spent = Order.objects.filter(user=request.user).aggregate(Sum('total_price'))['total_price__sum'] or 0
     
-    # Get recent orders
     recent_orders = Order.objects.filter(user=request.user).prefetch_related('items')[:5]
-    
-    # Get wishlist items
     wishlist_items = Wishlist.objects.filter(user=request.user).select_related('product')
     
     if request.method == 'POST':
-        # Update profile
         user = request.user
         user.first_name = request.POST.get('first_name')
         user.last_name = request.POST.get('last_name')
@@ -243,12 +197,11 @@ def profile(request):
     }
     
     return render(request, 'users/profilepage.html', context)
+
 @login_required
 def add_to_wishlist(request, product_id):
-    """Add a product to user's wishlist"""
     product = get_object_or_404(Product, id=product_id)
     
-    # Try to create wishlist item (will fail if already exists due to unique_together)
     wishlist_item, created = Wishlist.objects.get_or_create(
         user=request.user,
         product=product
@@ -259,13 +212,10 @@ def add_to_wishlist(request, product_id):
     else:
         messages.info(request, f'"{product.name}" is already in your wishlist!')
     
-    # Redirect to profile page with wishlist section
     return redirect('users:profile')
-
 
 @login_required
 def remove_from_wishlist(request, wishlist_id):
-    """Remove a product from user's wishlist"""
     wishlist_item = get_object_or_404(Wishlist, id=wishlist_id, user=request.user)
     product_name = wishlist_item.product.name
     wishlist_item.delete()
@@ -273,17 +223,13 @@ def remove_from_wishlist(request, wishlist_id):
     messages.success(request, f'"{product_name}" removed from your wishlist.')
     return redirect('users:profile')
 
-
 def forgot_password(request):
-    """Handle forgot password request"""
     if request.method == 'POST':
         username_or_phone = request.POST.get('username_or_phone')
         
         try:
-            # Try to find user by username
             user = User.objects.get(username=username_or_phone)
         except User.DoesNotExist:
-            # Try to find by phone number
             try:
                 profile = UserProfile.objects.get(phone=username_or_phone)
                 user = profile.user
@@ -291,16 +237,13 @@ def forgot_password(request):
                 messages.error(request, 'No account found with that username or phone number.')
                 return redirect('users:forgot_password')
         
-        # Generate reset code
         reset_code = str(random.randint(100000, 999999))
         
-        # Store in session
         request.session['reset_data'] = {
             'user_id': user.id,
             'reset_code': reset_code,
         }
         
-        # Send SMS
         try:
             profile = UserProfile.objects.get(user=user)
             send_verification_sms(profile.phone, reset_code)
@@ -313,9 +256,7 @@ def forgot_password(request):
     
     return render(request, 'users/forgotten_password.html')
 
-
 def reset_password(request):
-    """Verify code and reset password"""
     reset_data = request.session.get('reset_data')
     if not reset_data:
         messages.error(request, 'Password reset session expired. Please try again.')
@@ -326,23 +267,19 @@ def reset_password(request):
         new_password1 = request.POST.get('new_password1')
         new_password2 = request.POST.get('new_password2')
         
-        # Verify code
         if code != reset_data['reset_code']:
             messages.error(request, 'Invalid verification code.')
             return render(request, 'users/reset_password.html')
         
-        # Check passwords match
         if new_password1 != new_password2:
             messages.error(request, 'Passwords do not match!')
             return render(request, 'users/reset_password.html')
         
-        # Reset password
         try:
             user = User.objects.get(id=reset_data['user_id'])
             user.set_password(new_password1)
             user.save()
             
-            # Clear session
             del request.session['reset_data']
             
             messages.success(request, 'Password reset successfully! You can now login.')
@@ -352,3 +289,56 @@ def reset_password(request):
             messages.error(request, 'Error resetting password. Please try again.')
     
     return render(request, 'users/reset_password.html')
+
+
+# ADD THESE NEW API VIEWS FOR ANDROID APP
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.utils import timezone
+import json
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def get_pending_sms(request):
+    """API: Android app fetches pending SMS"""
+    pending_messages = SMSMessage.objects.filter(status='pending').order_by('created_at')[:10]
+    
+    messages_data = []
+    for msg in pending_messages:
+        messages_data.append({
+            'id': msg.id,
+            'phone_number': msg.phone_number,
+            'message': msg.message,
+            'created_at': msg.created_at.isoformat(),
+        })
+    
+    return JsonResponse({
+        'status': 'success',
+        'count': len(messages_data),
+        'messages': messages_data
+    })
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def update_sms_status(request):
+    """API: Android app updates SMS status after sending"""
+    try:
+        data = json.loads(request.body)
+        sms_id = data.get('id')
+        status = data.get('status')
+        error_message = data.get('error_message', '')
+        
+        sms = SMSMessage.objects.get(id=sms_id)
+        sms.status = status
+        if status == 'sent':
+            sms.sent_at = timezone.now()
+        if error_message:
+            sms.error_message = error_message
+        sms.save()
+        
+        return JsonResponse({'status': 'success', 'message': 'SMS status updated'})
+    except SMSMessage.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'SMS not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)

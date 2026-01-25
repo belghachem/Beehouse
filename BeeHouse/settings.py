@@ -6,21 +6,15 @@ from decouple import config
 # Build paths
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# Authentication
 LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'home:home_page'
 LOGOUT_REDIRECT_URL = 'home:home_page'
 
-# Allowed hosts
 ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
 
-# Database
 DATABASES = {
     'default': dj_database_url.config(
         default=config('DATABASE_URL'),
@@ -77,7 +71,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'BeeHouse.wsgi.application'
 
-# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -85,31 +78,28 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Africa/Algiers'
 USE_I18N = True
 USE_TZ = True
 
-# Static files
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# SMS Configuration
-SMS_ACCOUNT_SID = config('SMS_ACCOUNT_SID')
-SMS_API_KEY_SID = config('SMS_API_KEY_SID', default='')
-SMS_API_KEY_SECRET = config('SMS_API_KEY_SECRET', default='')
-SMS_AUTH_TOKEN = config('SMS_AUTH_TOKEN', default='')
-SMS_TWILIO_NUMBER = config('SMS_TWILIO_NUMBER')
-SMS_ENABLED = config('SMS_ENABLED', default=True, cast=bool)
+# ============================================
+# SMS GATEWAY CONFIGURATION - ADD THIS SECTION
+# ============================================
+# Use 'console' for testing (prints to console)
+# Use 'http' for production (Android app will fetch)
+SMS_BACKEND = 'sms.backends.console.SmsBackend'  # For testing first
+# SMS_BACKEND = 'sms.backends.http.HttpBackend'  # Change to this for production
 
-# Security Settings (Production)
+# Security Settings
 if not DEBUG:
     SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
     SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=True, cast=bool)
@@ -121,13 +111,11 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
     
-    # CSRF trusted origins (update with your domain)
     CSRF_TRUSTED_ORIGINS = [
         'https://beehouse-0s4k.onrender.com',
         'https://www.beehouse-0s4k.onrender.com',
     ]
 else:
-    # Development settings
     CSRF_TRUSTED_ORIGINS = [
         'http://localhost',
         'http://127.0.0.1',
@@ -135,11 +123,8 @@ else:
         'http://127.0.0.1:8000',
     ]
 
-
-# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Logging (Production)
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -169,20 +154,16 @@ LOGGING = {
             'propagate': True,
         },
     },
-
 }
+
 import cloudinary
-import cloudinary.uploader
-import cloudinary.api
+from decouple import config
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME' : os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY' : os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET' : os.environ.get('CLOUDINARY_API_SECRET'),
-    'SECURE' : os.environ.get('CLOUDINARY_SECURE'),
-}
-
-
+cloudinary.config(
+    cloud_name=config('CLOUDINARY_CLOUD_NAME'),
+    api_key=config('CLOUDINARY_API_KEY'),
+    api_secret=config('CLOUDINARY_API_SECRET'),
+    secure=True
+)
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-

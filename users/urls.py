@@ -17,4 +17,8 @@ urlpatterns = [
     # Wishlist URLs
     path('wishlist/add/<int:product_id>/', views.add_to_wishlist, name='add_to_wishlist'),
     path('wishlist/remove/<int:wishlist_id>/', views.remove_from_wishlist, name='remove_from_wishlist'),
+
+    # API endpoints for Android app
+    path('api/sms/pending/', views.get_pending_sms, name='api_sms_pending'),
+    path('api/sms/update/', views.update_sms_status, name='api_sms_update'),
 ]

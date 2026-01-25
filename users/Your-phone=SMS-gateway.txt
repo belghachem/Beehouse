@@ -1,0 +1,237 @@
+Part 2: Android Phone Setup (This is What You Need!)
+Option A: Termux Method (FREE, EASY)
+On Your Android Phone:
+
+Install Termux (from F-Droid or Google Play)
+Install Termux:API (separate app, also from F-Droid/Play Store)
+Open Termux and run these commands:
+
+bash# Update Termux
+pkg update && pkg upgrade
+
+# Install Python and Termux API
+pkg install python termux-api
+
+# Install requests library
+pip install requests
+
+Create the SMS sender script:
+
+bashnano sms_sender.py
+
+Paste this code (use your actual server URL):
+
+pythonimport subprocess
+import requests
+import time
+import json
+
+# CHANGE THIS to your server URL
+# For local testing (when phone and computer on same WiFi):
+# API_URL = "http://192.168.1.XXX:8000/users/api/sms/pending/"
+# UPDATE_URL = "http://192.168.1.XXX:8000/users/api/sms/update/"
+
+# For production (Render):
+API_URL = "https://beehouse-0s4k.onrender.com/users/api/sms/pending/"
+UPDATE_URL = "https://beehouse-0s4k.onrender.com/users/api/sms/update/"
+
+def send_sms(phone, message):
+    """Send SMS using Termux API"""
+    try:
+        print(f"Sending SMS to {phone}...")
+        result = subprocess.run(
+            ['termux-sms-send', '-n', phone, message],
+            capture_output=True,
+            text=True
+        )
+        
+        if result.returncode == 0:
+            print(f"✓ SMS sent successfully!")
+            return True
+        else:
+            print(f"✗ Failed to send SMS: {result.stderr}")
+            return False
+    except Exception as e:
+        print(f"✗ Error: {e}")
+        return False
+
+def main():
+    print("🐝 Bee House SMS Sender Started!")
+    print(f"Checking: {API_URL}")
+    print("Press Ctrl+C to stop\n")
+    
+    while True:
+        try:
+            # Fetch pending SMS from Django
+            response = requests.get(API_URL, timeout=10)
+            data = response.json()
+            
+            messages_count = data.get('count', 0)
+            
+            if messages_count > 0:
+                print(f"\n📨 Found {messages_count} pending SMS")
+                
+                for sms in data.get('messages', []):
+                    sms_id = sms['id']
+                    phone = sms['phone_number']
+                    message = sms['message']
+                    
+                    print(f"\n--- SMS #{sms_id} ---")
+                    print(f"To: {phone}")
+                    print(f"Message: {message}")
+                    
+                    # Send SMS using your phone
+                    success = send_sms(phone, message)
+                    
+                    # Update status in Django
+                    status_data = {
+                        'id': sms_id,
+                        'status': 'sent' if success else 'failed',
+                        'error_message': '' if success else 'Failed to send'
+                    }
+                    
+                    update_response = requests.post(
+                        UPDATE_URL,
+                        json=status_data,
+                        headers={'Content-Type': 'application/json'}
+                    )
+                    
+                    if update_response.status_code == 200:
+                        print(f"✓ Status updated in database")
+                    
+                    time.sleep(2)  # Wait 2 seconds between messages
+            else:
+                print(".", end="", flush=True)  # Show it's running
+            
+            time.sleep(10)  # Check every 10 seconds
+            
+        except requests.exceptions.RequestException as e:
+            print(f"\n✗ Connection error: {e}")
+            print("Retrying in 30 seconds...")
+            time.sleep(30)
+        except KeyboardInterrupt:
+            print("\n\n👋 SMS Sender stopped!")
+            break
+        except Exception as e:
+            print(f"\n✗ Unexpected error: {e}")
+            time.sleep(30)
+
+if __name__ == "__main__":
+    main()
+
+Save the file:
+
+
+Press Ctrl + X
+Press Y
+Press Enter
+
+
+Run the script:
+
+bashpython sms_sender.py
+```
+
+You should see:
+```
+🐝 Bee House SMS Sender Started!
+Checking: https://beehouse-0s4k.onrender.com/users/api/sms/pending/
+Press Ctrl+C to stop
+
+......
+The dots mean it's checking every 10 seconds.
+
+Part 3: Test It!
+Test 1: Check if script connects
+If the script is running and showing dots ......, it's working!
+Test 2: Create a test SMS from Django admin
+
+Go to your Django admin: http://localhost:8000/admin/ (or your Render URL)
+Login
+Go to Users → SMS Messages
+Click Add SMS Message
+Fill in:
+
+Phone number: Your own phone number (for testing) - use format: +213XXXXXXXXX
+Message: Test message from Bee House
+Status: pending
+
+
+Click Save
+
+Watch Your Phone!
+Within 10 seconds:
+
+Your Termux script will find the SMS
+Your phone will send it
+You'll receive an SMS on your phone!
+Script will update status to "sent"
+
+
+Production Setup:
+Keep Script Running 24/7:
+Once you confirm it works, keep the script running:
+Method 1: Termux Wake Lock
+bash# Install wake lock
+pkg install termux-services
+
+# Run with wake lock
+termux-wake-lock
+python sms_sender.py
+Method 2: Use nohup
+bashnohup python sms_sender.py &
+Method 3: Termux Boot (Auto-start on phone boot)
+bashpkg install termux-boot
+mkdir -p ~/.termux/boot
+nano ~/.termux/boot/start-sms.sh
+Add this:
+bash#!/data/data/com.termux/files/usr/bin/sh
+termux-wake-lock
+cd ~
+python sms_sender.py
+Make executable:
+bashchmod +x ~/.termux/boot/start-sms.sh
+```
+
+---
+
+## **Important Notes:**
+
+### **Your Phone Number Will Show:**
+- When users receive SMS, they see **YOUR phone number** as sender
+- This is good for trust!
+- Example: User sees: "From: +213XXXXXXXXX"
+
+### **Requirements:**
+- ✅ Phone must have internet (WiFi or mobile data)
+- ✅ Phone must have SMS credits/plan
+- ✅ Termux app must be open (can be in background)
+- ✅ Phone should be charged/plugged in
+
+### **Costs:**
+- **Django/Server:** Already paid (Render hosting)
+- **Termux:** FREE
+- **SMS Sending:** Uses your phone's SMS plan (usually cheap/unlimited in Algeria)
+
+---
+
+## **Alternative: If Termux Doesn't Work**
+
+If you have issues with Termux, you can use:
+
+**SMS Gateway App** (from Play Store):
+- Install "SMS Gateway API" app
+- Configure it to poll your API
+- Same concept, easier UI
+
+---
+
+## **Quick Summary:**
+```
+1. User registers → Django saves SMS to database (status: pending)
+2. Your Android phone (running Termux script) → checks database every 10 seconds
+3. Phone finds pending SMS → sends it using YOUR SIM card
+4. Recipient gets SMS from YOUR phone number
+5. Phone updates database (status: sent)
+
+Your phone = SMS gateway!
