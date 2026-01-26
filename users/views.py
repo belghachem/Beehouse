@@ -342,3 +342,29 @@ def update_sms_status(request):
         return JsonResponse({'status': 'error', 'message': 'SMS not found'}, status=404)
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def delete_sms(request):
+    """API: Delete SMS after successful send"""
+    try:
+        data = json.loads(request.body)
+        sms_id = data.get('id')
+        
+        sms = SMSMessage.objects.get(id=sms_id)
+        sms.delete()
+        
+        return JsonResponse({
+            'status': 'success', 
+            'message': f'SMS #{sms_id} deleted successfully'
+        })
+    except SMSMessage.DoesNotExist:
+        return JsonResponse({
+            'status': 'error', 
+            'message': 'SMS not found'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error', 
+            'message': str(e)
+        }, status=400)
