@@ -6,7 +6,7 @@ from BeeHouse.views import admin_notifications_view
 
 urlpatterns = [
     path('znd/', admin.site.urls),
-    path('znd/notifications/', admin_notifications_view, name='admin_notifications'),  
+    path('notifications/', admin_notifications_view, name='admin_notifications'),  
     path('', include('home.urls')),                    # Home page
     path('products/', include('products.urls')),       # Products
     path('cart/', include('cart.urls')),               # Cart
