@@ -1,0 +1,8 @@
+{% extends "admin/base.html" %}
+
+{% block userlinks %}
+    {{ block.super }}
+    <a href="{% url 'admin_notifications' %}" style="margin-left: 10px; color: #fff; text-decoration: none;">
+        🔔 NOTIFICATIONS
+    </a>
+{% endblock %}
