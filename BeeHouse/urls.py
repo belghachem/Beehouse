@@ -2,9 +2,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from BeeHouse.views import admin_notifications_view  # ← ADD THIS IMPORT
 
 urlpatterns = [
     path('znd/', admin.site.urls),
+    path('znd/notifications/', admin_notifications_view, name='admin_notifications'),  # ← ADD THIS LINE
     path('', include('home.urls')),                    # Home page
     path('products/', include('products.urls')),       # Products
     path('cart/', include('cart.urls')),               # Cart
