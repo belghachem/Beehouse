@@ -50,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'home.middleware.VisitorTrackingMiddleware',
+    'BeeHouse.middleware.AdminNotificationMiddleware',
 ]
 
 ROOT_URLCONF = 'BeeHouse.urls'
