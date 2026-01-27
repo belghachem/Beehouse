@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from datetime import timedelta
 from orders.models import Order
 from contactus.models import Contact
@@ -44,18 +45,20 @@ class AdminNotificationMiddleware:
             if old_count > 0:
                 messages.error(
                     request,
-                    f"🚨 URGENT: {old_count} pending order(s) are more than 24 hours old! "
-                    f'<a href="/znd/orders/order/?status__exact=pending" style="color: white; text-decoration: underline;">View Now</a>',
-                    extra_tags='safe'
+                    mark_safe(
+                        f"🚨 URGENT: {old_count} pending order(s) are more than 24 hours old! "
+                        f'<a href="/znd/orders/order/?status__exact=pending" style="color: white; text-decoration: underline;">View Now</a>'
+                    )
                 )
             
             if pending_count > old_count:
                 new_pending = pending_count - old_count
                 messages.warning(
                     request,
-                    f"📦 You have {new_pending} new pending order(s) waiting to be processed. "
-                    f'<a href="/znd/orders/order/?status__exact=pending" style="color: white; text-decoration: underline;">View Orders</a>',
-                    extra_tags='safe'
+                    mark_safe(
+                        f"📦 You have {new_pending} new pending order(s) waiting to be processed. "
+                        f'<a href="/znd/orders/order/?status__exact=pending" style="color: white; text-decoration: underline;">View Orders</a>'
+                    )
                 )
         
         # 2. CHECK UNREAD CONTACT MESSAGES
@@ -69,18 +72,20 @@ class AdminNotificationMiddleware:
             if today_contacts > 0:
                 messages.warning(
                     request,
-                    f"📧 You have {today_contacts} new contact message(s) received today! "
-                    f'<a href="/znd/contactus/contact/?is_read__exact=0" style="color: white; text-decoration: underline;">Read Messages</a>',
-                    extra_tags='safe'
+                    mark_safe(
+                        f"📧 You have {today_contacts} new contact message(s) received today! "
+                        f'<a href="/znd/contactus/contact/?is_read__exact=0" style="color: white; text-decoration: underline;">Read Messages</a>'
+                    )
                 )
             
             if unread_count > today_contacts:
                 old_contacts = unread_count - today_contacts
                 messages.info(
                     request,
-                    f"📨 {old_contacts} older unread contact message(s). "
-                    f'<a href="/znd/contactus/contact/?is_read__exact=0" style="color: white; text-decoration: underline;">View All</a>',
-                    extra_tags='safe'
+                    mark_safe(
+                        f"📨 {old_contacts} older unread contact message(s). "
+                        f'<a href="/znd/contactus/contact/?is_read__exact=0" style="color: white; text-decoration: underline;">View All</a>'
+                    )
                 )
         
         # 3. CHECK NEW WISHLIST ITEMS (added today)
@@ -90,9 +95,10 @@ class AdminNotificationMiddleware:
         if wishlist_count > 0:
             messages.info(
                 request,
-                f"❤️ {wishlist_count} customer(s) added items to their wishlist today! "
-                f'<a href="/znd/users/wishlist/" style="color: white; text-decoration: underline;">View Wishlists</a>',
-                extra_tags='safe'
+                mark_safe(
+                    f"❤️ {wishlist_count} customer(s) added items to their wishlist today! "
+                    f'<a href="/znd/users/wishlist/" style="color: white; text-decoration: underline;">View Wishlists</a>'
+                )
             )
         
         # 4. CHECK FAILED SMS (if any)
@@ -102,7 +108,8 @@ class AdminNotificationMiddleware:
         if failed_sms > 0:
             messages.error(
                 request,
-                f"❌ {failed_sms} SMS message(s) failed to send! "
-                f'<a href="/znd/users/smsmessage/?status__exact=failed" style="color: white; text-decoration: underline;">Retry Now</a>',
-                extra_tags='safe'
+                mark_safe(
+                    f"❌ {failed_sms} SMS message(s) failed to send! "
+                    f'<a href="/znd/users/smsmessage/?status__exact=failed" style="color: white; text-decoration: underline;">Retry Now</a>'
+                )
             )
