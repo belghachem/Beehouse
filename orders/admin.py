@@ -1,5 +1,9 @@
 from django.contrib import admin
 from django.utils import timezone
+from django.urls import reverse
+from django.urls import reverse
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from .models import Order, OrderItem, ShippingRate, StopDesk
 from users.models import SMSMessage
 import logging
@@ -52,17 +56,18 @@ def send_order_sms(phone, message):
 class OrderAdmin(admin.ModelAdmin):
     list_display = [
         'id', 'user', 'status', 'delivery_type', 
-        'total_price', 'wilaya', 'created_at'
+        'total_price', 'wilaya', 'created_at', 'view_invoice_button'
     ]
     list_filter = ['status', 'delivery_type', 'wilaya', 'created_at']
     search_fields = ['id', 'user__username', 'phone', 'full_name', 'tracking_number']
-    readonly_fields = ['created_at', 'updated_at', 'subtotal', 'total_price']
+    readonly_fields = ['created_at', 'updated_at', 'subtotal', 'total_price','view_invoice_link',  
+        'order_details_summary']
     
     inlines = [OrderItemInline]
     
     fieldsets = (
         ('Order Information', {
-            'fields': ('user', 'status', 'payment_method', 'tracking_number')
+            'fields': ('id', 'user', 'status', 'payment_method', 'tracking_number', 'view_invoice_link')
         }),
         ('Customer Details', {
             'fields': ('full_name', 'phone', 'address', 'city', 'wilaya')
@@ -79,6 +84,72 @@ class OrderAdmin(admin.ModelAdmin):
         }),
     )
     
+    def view_invoice_button(self, obj):
+        """Displays a button in the admin list view to open invoice"""
+        url = reverse('orders:download_invoice', args=[obj.id])
+        return format_html(
+            '<a class="button" href="{}" target="_blank" '
+            'style="color: white; padding: 5px 10px; background: #417690; '
+            'text-decoration: none; border-radius: 4px; font-weight: bold;">'
+            'View Invoice</a>',
+            url
+        )
+    view_invoice_button.short_description = 'Invoice'
+    view_invoice_button.allow_tags = True
+    
+    def view_invoice_link(self, obj):
+        """Displays a large clickable link in the detail view"""
+        if obj.id:
+            url = reverse('orders:download_invoice', args=[obj.id])
+            return format_html(
+                '<div style="background: #f0f0f0; padding: 20px; border-radius: 8px; text-align: center;">'
+                '<a href="{}" target="_blank" '
+                'style="background: #417690; color: white; padding: 15px 40px; text-decoration: none; '
+                'border-radius: 10px; font-size: 16px; font-weight: bold; '
+                'display: inline-block; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">'
+                '📄 View/Print Invoice</a>'
+                '<p style="margin-top: 15px; color: #666; font-size: 14px;">'
+                'Click to view the printable invoice in a new tab</p>'
+                '</div>',
+                url
+            )
+        return "Save order first to generate invoice"
+    view_invoice_link.short_description = 'Invoice Actions'
+    
+    def order_details_summary(self, obj):
+        """Displays formatted order items in admin"""
+        items_html = '<div style="background: white; padding: 15px; border-radius: 8px;">'
+        items_html += '<h3 style="color: #333; margin-bottom: 15px;">Order Items</h3>'
+        items_html += '<table style="width: 100%; border-collapse: collapse;">'
+        items_html += '''
+            <thead style="background: #f59e0b; color: white;">
+                <tr>
+                    <th style="padding: 10px; text-align: left;">Product</th>
+                    <th style="padding: 10px; text-align: center;">Quantity</th>
+                    <th style="padding: 10px; text-align: right;">Price</th>
+                    <th style="padding: 10px; text-align: right;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+        '''
+        
+        for item in obj.items.all():
+            items_html += f'''
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 10px;">{item.product.name}</td>
+                    <td style="padding: 10px; text-align: center;">{item.quantity}</td>
+                    <td style="padding: 10px; text-align: right;">{item.price} DZD</td>
+                    <td style="padding: 10px; text-align: right; font-weight: bold; color: #d97706;">
+                        {item.get_total_price()} DZD
+                    </td>
+                </tr>
+            '''
+        
+        items_html += '</tbody></table></div>'
+        return mark_safe(items_html)
+    order_details_summary.short_description = 'Order Items'
+
+    # ========== Actions ==========
     actions = ['mark_as_processing', 'mark_as_shipped', 'mark_as_delivered', 'mark_as_cancelled']
     
     def mark_as_processing(self, request, queryset):
@@ -100,6 +171,7 @@ class OrderAdmin(admin.ModelAdmin):
                 f"🐝 Bee House: Your order #{order.id} has been shipped! "
                 f"{tracking_info} "
                 f"Thank you for shopping with us!"
+                f"viste https://beehouse-0s4k.onrender.com/users/profile/#orders"
             )
             
             try:
@@ -122,7 +194,8 @@ class OrderAdmin(admin.ModelAdmin):
             message = (
                 f"🐝 Bee House: Your order #{order.id} has been delivered! "
                 f"We hope you enjoy your purchase. "
-                f"Thank you for choosing Bee House! ❤️"
+                f"Thank you for choosing Bee House! "
+                f"viste https://beehouse-0s4k.onrender.com/users/profile/#orders"
             )
             
             try:
@@ -146,6 +219,7 @@ class OrderAdmin(admin.ModelAdmin):
                 f"🐝 Bee House: Your order #{order.id} has been cancelled. "
                 f"If you have any questions, please contact us. "
                 f"We hope to serve you again soon."
+                f"viste https://beehouse-0s4k.onrender.com/users/profile/#orders"
             )
             
             try:
