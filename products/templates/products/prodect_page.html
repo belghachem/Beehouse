@@ -1,107 +1,82 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>{% block title %}BEE HOUSE{% endblock %}</title>
-    <link rel="stylesheet" type="text/CSS" href="{% static 'CSS/prodect-page-stylesheet.css' %}"/>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
+    <meta name="description" content="Browse our premium honey and olive oil products - Bee House">
+    
+    <title>Our Products - Bee House</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/bee-house-shared.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/products-stylesheet.css' %}"/>
     <link rel="stylesheet" href="{% static 'CSS/mobile.css' %}">
-    <style>
-        .toast-notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-            z-index: 9999;
-            animation: slideIn 0.3s ease-out;
-            display: none;
-        }
-
-        .toast-notification.show {
-            display: block;
-        }
-
-        .toast-notification.error {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .cart-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #dc2626;
-            color: white;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
-
-        .products-img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 10px;
-            transition: transform 0.3s ease;
-        }
-
-        .products-card:hover .products-img {
-            transform: scale(1.05);
-        }
-    </style>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
 </head>
 <body>
-    <div class="header">
-        <div class="logo"><img class="beelogo" src="{% static 'Images/BEEBLACK.png' %}"></div>
-        <section class="nav-bar">
-            <ol>
-                <li><a href="{% url 'home:home_page' %}"><button class="nav-bar-button">Home</button></a></li>
-                <li><a href="{% url 'products:product_page' %}"><button class="nav-bar-button">Products</button></a></li>
-                <li><a href="{% url 'contactus:contact' %}"><button class="nav-bar-button">Contact-us</button></a></li>
-            </ol>
-            <div class="profile">
-                <div class="cart-icon-container">
-                    <a href="{% url 'cart:view_cart' %}">
-                        <img src="{% static 'Images/cart-icon.png' %}" alt="shopping cart" class="cart-icon">
-                    </a>
-                </div>
-                <a href="{% url 'users:profile'%}">
-                    <img src="{% static 'Images/user_icon-profile.png' %}" alt="user-profile" class="user-profile">
+    <!-- Header Section -->
+    <header class="header">
+        <nav class="nav-bar" role="navigation">    
+            <div class="logo">
+                <a href="{% url 'home:home_page' %}" aria-label="Bee House Home">
+                    <img class="beelogo" src="{% static 'Images/BEEBLACK.png' %}" alt="Bee House Logo">
                 </a>
             </div>
-        </section>
-    </div>
+            
+            <div class="nav-right">
+                <!-- Hamburger Menu -->
+                <div class="hamburger-menu">
+                    <button class="hamburger-btn" aria-label="Menu" id="menuToggle">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="{% url 'home:home_page' %}" class="dropdown-item">Home</a>
+                        <a href="{% url 'products:product_page' %}" class="dropdown-item">Products</a>
+                        <a href="{% url 'contactus:contact' %}" class="dropdown-item">Contact Us</a>
+                    </div>
+                </div>
+                
+                <!-- Profile Icons -->
+                <div class="profile">
+                    <div class="cart-icon-container">
+                        <a href="{% url 'cart:view_cart' %}" aria-label="Shopping Cart">
+                            <img src="{% static 'Images/cart-icon.png' %}" alt="Shopping Cart" class="cart-icon">
+                        </a>
+                    </div>
+                    <a href="{% url 'users:profile' %}" aria-label="User Profile">
+                        <img src="{% static 'Images/user_icon-profile.png' %}" alt="User Profile" class="user-profile">
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
     <div class="divider"></div>
+
+    <!-- Page Header -->
+    <section class="products-header">
+        <div class="products-header-content">
+            <h1>🍯 Our Premium Products</h1>
+            <p>Discover the finest natural honey and olive oil</p>
+        </div>
+    </section>
     
     <!-- Filter Section -->
     <section class="filter-section">
         <div class="filters-container">
             <div class="filter-group">
                 <label for="categoryFilter" class="filter-label">
-                    <span class="filter-icon">Category:</span>
+                    <span class="filter-icon">📁</span> Category:
                 </label>
                 <select id="categoryFilter" name="category" class="filter-dropdown">
                     <option value="all">All Products</option>
@@ -112,7 +87,7 @@
 
             <div class="filter-group">
                 <label for="sortFilter" class="filter-label">
-                    <span class="filter-icon">Sort By:</span>
+                    <span class="filter-icon">🔄</span> Sort By:
                 </label>
                 <select id="sortFilter" name="sort" class="filter-dropdown">
                     <option value="none">Default</option>
@@ -127,7 +102,7 @@
 
             <div class="filter-group">
                 <label for="priceFilter" class="filter-label">
-                    <span class="filter-icon">Price Range:</span>
+                    <span class="filter-icon">💰</span> Price Range:
                 </label>
                 <select id="priceFilter" name="price" class="filter-dropdown">
                     <option value="all">All Prices (DZD)</option>
@@ -140,49 +115,99 @@
 
             <div class="filter-group">
                 <button class="clear-filters-btn" id="clearFilters">
-                    <span class="filter-icon">Clear Filters</span>
+                    <span class="filter-icon">✕</span> Clear Filters
                 </button>
             </div>
         </div>
     </section>
-    <div class="divider"></div>
+
+    <!-- Toast Notification -->
     <div id="toast" class="toast-notification"></div>
     
-    <section class="prodects-section">
-        <div class="our-prodect-content" id="productsContainer">
+    <!-- Products Section -->
+    <main class="products-section">
+        <div class="products-content" id="productsContainer">
             {% for product in products %}
-            <div class="products-card" 
+            <article class="product-card" 
                  data-category="{{ product.category|lower }}" 
                  data-price="{{ product.price }}" 
                  data-name="{{ product.name }}"
                  data-quantity="{{ product.quantity }}">
-                 {% if product.picture %}
-                     <img src="{{ product.picture.url }}" alt="{{ product.name }}" class="products-img">
-                 {% else %}
-                     <img src="{% static 'Images/jarofhoney.jpg' %}" alt="{{ product.name }}" class="products-img">
-                 {% endif %}
                  
-                <a href="{% url 'products:product_detail' product.slug %}">
-                    <h3 class="products-title">{{ product.name }}</h3>
-                </a>
-                <p class="category">{{ product.category }} - {{ product.quantity }}</p>
-                <p class="products-prix">{{ product.price }} DZD</p>
-                <a href="{% url 'products:product_detail' product.slug %}" class="view-details-btn">View Details</a>
-                <form action="{% url 'cart:add_to_cart' product.id %}" method="POST">
-                    {% csrf_token %}
-                    <button type="submit" class="addtocart-btn">Add to Cart</button>
-                </form>
-            </div>
+                <div class="product-image-wrapper">
+                    {% if product.picture %}
+                        <img src="{{ product.picture.url }}" alt="{{ product.name }}" class="product-img">
+                    {% else %}
+                        <img src="{% static 'Images/jarofhoney.jpg' %}" alt="{{ product.name }}" class="product-img">
+                    {% endif %}
+                    
+                    <div class="product-overlay">
+                        <a href="{% url 'products:product_detail' product.slug %}" class="quick-view-btn">
+                            👁️ Quick View
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="product-info">
+                    <a href="{% url 'products:product_detail' product.slug %}" class="product-link">
+                        <h3 class="product-title">{{ product.name }}</h3>
+                    </a>
+                    <p class="product-category">{{ product.category }} • {{ product.quantity }}</p>
+                    <div class="product-footer">
+                        <p class="product-price">{{ product.price }} DZD</p>
+                        <form action="{% url 'cart:add_to_cart' product.id %}" method="POST" class="add-to-cart-form">
+                            {% csrf_token %}
+                            <button type="submit" class="add-to-cart-btn" title="Add to Cart">
+                                🛒
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </article>
             {% endfor %}
         </div>
 
-        <div id="noResultsMessage" style="display: none; text-align: center; padding: 3rem; width: 100%;">
-            <h2 style="color: #8B7355; font-size: 2rem;">No products found</h2>
-            <p style="color: #666; margin-top: 1rem;">Try adjusting your filters</p>
+        <div id="noResultsMessage" class="no-results" style="display: none;">
+            <div class="no-results-icon">🔍</div>
+            <h2>No products found</h2>
+            <p>Try adjusting your filters to see more products</p>
+            <button class="clear-filters-btn" onclick="document.getElementById('clearFilters').click()">
+                Clear All Filters
+            </button>
         </div>
-    </section>
+    </main>
 
     <script>
+        // Hamburger menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            
+            if (menuToggle && dropdownMenu) {
+                menuToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('active');
+                    menuToggle.classList.toggle('active');
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!menuToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                        dropdownMenu.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                    }
+                });
+                
+                const dropdownItems = dropdownMenu.querySelectorAll('.dropdown-item');
+                dropdownItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        dropdownMenu.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                    });
+                });
+            }
+        });
+
+        // Filter functionality
         const categoryFilter = document.getElementById('categoryFilter');
         const sortFilter = document.getElementById('sortFilter');
         const priceFilter = document.getElementById('priceFilter');
@@ -207,9 +232,10 @@
             const sort = sortFilter.value;
             const priceRange = priceFilter.value;
 
-            let products = Array.from(document.querySelectorAll('.products-card'));
+            let products = Array.from(document.querySelectorAll('.product-card'));
             let visibleCount = 0;
 
+            // Category filter
             products.forEach(product => {
                 const productCategory = product.dataset.category.toLowerCase();
                 let matchesCategory = true;
@@ -226,6 +252,7 @@
                 product.style.display = matchesCategory ? 'block' : 'none';
             });
 
+            // Price filter
             products.forEach(product => {
                 if (product.style.display === 'none') return;
 
@@ -250,6 +277,7 @@
             const visibleProducts = products.filter(p => p.style.display !== 'none');
             visibleCount = visibleProducts.length;
 
+            // Sort
             if (sort !== 'none' && visibleProducts.length > 0) {
                 visibleProducts.sort((a, b) => {
                     if (sort === 'price-low') {
@@ -272,6 +300,15 @@
                     productsContainer.appendChild(product);
                 });
             }
+
+            // Show/hide no results message
+            if (visibleCount === 0) {
+                noResultsMessage.style.display = 'flex';
+                productsContainer.style.display = 'none';
+            } else {
+                noResultsMessage.style.display = 'none';
+                productsContainer.style.display = 'grid';
+            }
         }
 
         function clearFilters() {
@@ -286,7 +323,13 @@
         priceFilter.addEventListener('change', applyFilters);
         clearButton.addEventListener('click', clearFilters);
 
-        applyFilters();
+        // Toast notification for cart additions
+        document.querySelectorAll('.add-to-cart-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                // Optional: Show toast notification
+                // You can implement this based on your backend response
+            });
+        });
     </script>
 </body>
 </html>

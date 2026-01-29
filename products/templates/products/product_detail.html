@@ -1,531 +1,271 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>{{ product.name }} - Bee House</title>
-    <link rel="stylesheet" type="text/CSS" href="{% static 'CSS/profile-page_stylesheet.css' %}"/>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
+    <meta name="description" content="{{ product.name }} - {{ product.description }}">
+    
+    <title>{{ product.name }} - Bee House</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/bee-house-shared.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/product-detail-stylesheet.css' %}"/>
     <link rel="stylesheet" href="{% static 'CSS/mobile.css' %}">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Epilogue', sans-serif;
-        }
-
-        body {
-            background: #fff;
-            min-height: 100vh;
-        }
-
-        .product-detail-container {
-            max-width: 1200px;
-            margin: 3rem auto;
-            padding: 0 3%;
-        }
-
-        .product-detail-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            background: #F5F1E8;
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Image Carousel Styles */
-        .product-image-section {
-            position: relative;
-        }
-
-        .carousel-container {
-            position: relative;
-            width: 100%;
-            height: 500px;
-            overflow: hidden;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .carousel-slide {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-
-        .carousel-slide.active {
-            opacity: 1;
-        }
-
-        .carousel-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .carousel-controls {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-            z-index: 10;
-        }
-
-        .carousel-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            border: 2px solid white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .carousel-dot.active {
-            background: #d97706;
-            transform: scale(1.3);
-        }
-
-        .carousel-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: #d97706;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .carousel-arrow:hover {
-            background: white;
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .carousel-arrow.prev {
-            left: 15px;
-        }
-
-        .carousel-arrow.next {
-            right: 15px;
-        }
-
-        .product-badge {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            z-index: 10;
-        }
-
-        .product-info-section {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .product-category {
-            color: #d97706;
-            font-weight: 600;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-
-        .product-title {
-            font-size: 2.5rem;
-            color: #8B7355;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-
-        .product-price-section {
-            margin: 1.5rem 0;
-            padding: 1.5rem;
-            background: white;
-            border-radius: 12px;
-            border-left: 4px solid #d97706;
-        }
-
-        .product-price {
-            font-size: 3rem;
-            color: #d97706;
-            font-weight: 700;
-        }
-
-        .price-label {
-            color: #666;
-            font-size: 0.9rem;
-            margin-top: 0.3rem;
-        }
-
-        .product-quantity-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin: 1.5rem 0;
-            padding: 1rem;
-            background: white;
-            border-radius: 10px;
-        }
-
-        .quantity-label {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .quantity-value {
-            background: #fef3c7;
-            color: #92400e;
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
-            font-weight: 700;
-        }
-
-        .product-description {
-            margin: 2rem 0;
-        }
-
-        .description-title {
-            font-size: 1.3rem;
-            color: #8B7355;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .description-text {
-            color: #555;
-            line-height: 1.8;
-            font-size: 1.05rem;
-        }
-
-        .product-features {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin: 1.5rem 0;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 1rem;
-            color: #555;
-        }
-
-        .feature-icon {
-            color: #d97706;
-            font-size: 1.2rem;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .btn-add-cart {
-            flex: 2;
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: #000;
-            padding: 1.2rem 2rem;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
-        }
-
-        .btn-add-cart:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.4);
-        }
-
-        .btn-wishlist {
-            flex: 1;
-            background: white;
-            color: #d97706;
-            padding: 1.2rem;
-            border: 2px solid #d97706;
-            border-radius: 12px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-wishlist:hover {
-            background: #d97706;
-            color: white;
-        }
-
-        @media screen and (max-width: 968px) {
-            .product-detail-grid {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-                padding: 2rem;
-            }
-
-            .carousel-container {
-                height: 400px;
-            }
-
-            .product-title {
-                font-size: 2rem;
-            }
-
-            .product-price {
-                font-size: 2.5rem;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
-
-            .carousel-arrow {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
-            }
-        }
-    </style>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <div class="logo"><img class="beelogo" src="{% static 'Images/BEEBLACK.png' %}"></div>
-        <section class="nav-bar">
-            <ol>
-                <li><a href="{% url 'home:home_page' %}"><button class="nav-bar-button">Home</button></a></li>
-                <li><a href="{% url 'products:product_page' %}"><button class="nav-bar-button">Products</button></a></li>
-                <li><a href="{% url 'contactus:contact' %}"><button class="nav-bar-button">Contact-us</button></a></li>
-            </ol>
-            <div class="profile">
-                <div class="cart-icon-container">
-                    <a href="{% url 'cart:view_cart' %}">
-                        <img src="{% static 'Images/cart-icon.png' %}" alt="shopping cart" class="cart-icon">
-                    </a>
-                </div>
-                <a href="{% url 'users:profile' %}">
-                    <img src="{% static 'Images/user_icon-profile.png' %}" alt="user-profile" class="user-profile">
+    <!-- Header Section -->
+    <header class="header">
+        <nav class="nav-bar" role="navigation">    
+            <div class="logo">
+                <a href="{% url 'home:home_page' %}" aria-label="Bee House Home">
+                    <img class="beelogo" src="{% static 'Images/BEEBLACK.png' %}" alt="Bee House Logo">
                 </a>
             </div>
-        </section>
-    </div>
+            
+            <div class="nav-right">
+                <!-- Hamburger Menu -->
+                <div class="hamburger-menu">
+                    <button class="hamburger-btn" aria-label="Menu" id="menuToggle">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="{% url 'home:home_page' %}" class="dropdown-item">Home</a>
+                        <a href="{% url 'products:product_page' %}" class="dropdown-item">Products</a>
+                        <a href="{% url 'contactus:contact' %}" class="dropdown-item">Contact Us</a>
+                    </div>
+                </div>
+                
+                <!-- Profile Icons -->
+                <div class="profile">
+                    <div class="cart-icon-container">
+                        <a href="{% url 'cart:view_cart' %}" aria-label="Shopping Cart">
+                            <img src="{% static 'Images/cart-icon.png' %}" alt="Shopping Cart" class="cart-icon">
+                        </a>
+                    </div>
+                    <a href="{% url 'users:profile' %}" aria-label="User Profile">
+                        <img src="{% static 'Images/user_icon-profile.png' %}" alt="User Profile" class="user-profile">
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
     <div class="divider"></div>
 
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="breadcrumb-container">
+            <a href="{% url 'home:home_page' %}">Home</a>
+            <span>›</span>
+            <a href="{% url 'products:product_page' %}">Products</a>
+            <span>›</span>
+            <span>{{ product.name }}</span>
+        </div>
+    </div>
+
     <!-- Product Detail Container -->
-    <div class="product-detail-container">
+    <main class="product-detail-container">
         <div class="product-detail-grid">
-            <!-- Product Image Carousel -->
+            <!-- Image Section -->
             <div class="product-image-section">
-                <div class="product-badge">🍯 Natural Product</div>
-                
                 <div class="carousel-container">
-                    <!-- Image Slides -->
                     {% if product.picture %}
                         <div class="carousel-slide active">
-                            <img src="{{ product.picture.url }}" alt="{{ product.name }} - Image 1">
+                            <img src="{{ product.picture.url }}" alt="{{ product.name }}">
                         </div>
-                    {% endif %}
-                    
-                    {% if product.picture_2 %}
-                        <div class="carousel-slide">
-                            <img src="{{ product.picture_2.url }}" alt="{{ product.name }} - Image 2">
-                        </div>
-                    {% endif %}
-                    
-                    {% if product.picture_3 %}
-                        <div class="carousel-slide">
-                            <img src="{{ product.picture_3.url }}" alt="{{ product.name }} - Image 3">
-                        </div>
-                    {% endif %}
-                    
-                    {% if not product.picture and not product.picture_2 and not product.picture_3 %}
+                    {% else %}
                         <div class="carousel-slide active">
                             <img src="{% static 'Images/jarofhoney.jpg' %}" alt="{{ product.name }}">
                         </div>
                     {% endif %}
                     
-                    <!-- Navigation Arrows -->
-                    <button class="carousel-arrow prev" onclick="changeSlide(-1)">‹</button>
-                    <button class="carousel-arrow next" onclick="changeSlide(1)">›</button>
-                    
-                    <!-- Dots -->
-                    <div class="carousel-controls" id="carouselDots"></div>
-                </div>
-            </div>
-
-            <!-- Product Info Section -->
-            <div class="product-info-section">
-                <div class="product-category">{{ product.category }}</div>
-                <h1 class="product-title">{{ product.name }}</h1>
-
-                <div class="product-price-section">
-                    <div class="product-price">{{ product.price }} DZD</div>
-                    <div class="price-label">Tax included</div>
-                </div>
-
-                <div class="product-quantity-info">
-                    <span class="quantity-label">📦 Quantity:</span>
-                    <span class="quantity-value">{{ product.quantity }}</span>
-                </div>
-
-                <div class="product-description">
-                    <h3 class="description-title">About This Product</h3>
-                    <p class="description-text">{{ product.description }}</p>
-                </div>
-
-                <div class="product-features">
-                    <div class="feature-item">
-                        <span class="feature-icon">✓</span>
-                        <span>100% Natural & Organic</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">✓</span>
-                        <span>Premium Quality Guaranteed</span>
-                    </div>
-                    <div class="feature-item">
-                        <span class="feature-icon">✓</span>
-                        <span>Locally Sourced</span>
+                    <!-- Additional product images can be added here -->
+                    <div class="carousel-controls">
+                        <span class="carousel-dot active" data-slide="0"></span>
                     </div>
                 </div>
-
-                <div class="action-buttons">
-                    <form action="{% url 'cart:add_to_cart' product.id %}" method="POST" style="flex: 2;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn-add-cart">🛒 Add to Cart</button>
-                    </form>
-                    
-                    {% if user.is_authenticated %}
+                
+                <!-- Wishlist Button -->
+                {% if user.is_authenticated %}
                         <a href="{% url 'users:add_to_wishlist' product.id %}" class="btn-wishlist">
+                    <button class="wishlist-btn" aria-label="Add to wishlist">
                             ❤️ Wishlist
+                    </button>
                         </a>
                     {% else %}
                         <a href="{% url 'users:login' %}" class="btn-wishlist">
                             ❤️ Wishlist
                         </a>
                     {% endif %}
+            </div>
+
+            <!-- Product Info Section -->
+            <div class="product-info-section">
+                <div class="product-badge">{{ product.category }}</div>
+                
+                <h1 class="product-title">{{ product.name }}</h1>
+                
+                <div class="product-meta">
+                    <span class="product-quantity">📦 Size: {{ product.quantity }}</span>
+                </div>
+                
+                <div class="product-price-section">
+                    <span class="product-price">{{ product.price }} DZD</span>
+                    <span class="product-price-label">Price per unit</span>
+                </div>
+                
+                <div class="product-description">
+                    <h2>About this product</h2>
+                    <p>{{ product.description|default:"Premium quality natural honey from Bee House. Pure, natural, and sustainably sourced." }}</p>
+                </div>
+                <!-- Action Buttons -->
+                <div class="product-actions">
+                    <form action="{% url 'cart:add_to_cart' product.id %}" method="POST" id="addToCartForm">
+                        {% csrf_token %}
+                        <input type="hidden" name="quantity" id="cartQuantity" value="1">
+                        <button type="submit" class="btn-add-cart">
+                            🛒 Add to Cart
+                        </button>
+                    </form>
+                    <a href="{% url 'products:product_page' %}" class="btn-continue">
+                    ← Continue Shopping
+                    </a>
+                </div>
+                
+                <!-- Product Features -->
+                <div class="product-features">
+                    <div class="feature-item">
+                        <span class="feature-icon">🍯</span>
+                        <div class="feature-text">
+                            <strong>100% Natural</strong>
+                            <p>Pure honey with no additives</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🌿</span>
+                        <div class="feature-text">
+                            <strong>Sustainably Sourced</strong>
+                            <p>Eco-friendly production</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🚚</span>
+                        <div class="feature-text">
+                            <strong>Fast Delivery</strong>
+                            <p>Statewide shipping available</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">✓</span>
+                        <div class="feature-text">
+                            <strong>Quality Guaranteed</strong>
+                            <p>Premium quality assured</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        
+        <!-- Additional Information Section -->
+        <div class="additional-info">
+            <div class="info-tabs">
+                <button class="tab-btn active" onclick="showTab('details')">Product Details</button>
+                <button class="tab-btn" onclick="showTab('benefits')">Health Benefits</button>
+                <button class="tab-btn" onclick="showTab('usage')">How to Use</button>
+            </div>
+            
+            <div class="tab-content active" id="details">
+                <h3>Product Details</h3>
+                <ul>
+                    <li><strong>Product Name:</strong> {{ product.name }}</li>
+                    <li><strong>Category:</strong> {{ product.category }}</li>
+                    <li><strong>Size:</strong> {{ product.quantity }}</li>
+                    <li><strong>Origin:</strong> Algeria</li>
+                    <li><strong>Storage:</strong> Store in a cool, dry place</li>
+                </ul>
+            </div>
+            
+            <div class="tab-content" id="benefits">
+                <h3>Health Benefits</h3>
+                <ul>
+                    <li>Rich in antioxidants and nutrients</li>
+                    <li>Natural energy booster</li>
+                    <li>Supports immune system</li>
+                    <li>Soothes sore throat and cough</li>
+                    <li>Promotes better sleep</li>
+                </ul>
+            </div>
+            
+            <div class="tab-content" id="usage">
+                <h3>How to Use</h3>
+                <ul>
+                    <li>Add to warm water or tea for a soothing drink</li>
+                    <li>Drizzle over yogurt or oatmeal</li>
+                    <li>Use as a natural sweetener in recipes</li>
+                    <li>Take a spoonful for quick energy</li>
+                    <li>Apply topically for skincare (if suitable)</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast-notification"></div>
 
     <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.carousel-slide');
-        const totalSlides = slides.length;
-        let autoPlayInterval;
-
-        // Create dots
-        function createDots() {
-            const dotsContainer = document.getElementById('carouselDots');
-            for (let i = 0; i < totalSlides; i++) {
-                const dot = document.createElement('div');
-                dot.className = 'carousel-dot';
-                if (i === 0) dot.classList.add('active');
-                dot.onclick = () => goToSlide(i);
-                dotsContainer.appendChild(dot);
-            }
-        }
-
-        // Show specific slide
-        function showSlide(n) {
-            if (totalSlides === 0) return;
+        // Hamburger menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const dropdownMenu = document.getElementById('dropdownMenu');
             
-            if (n >= totalSlides) currentSlide = 0;
-            if (n < 0) currentSlide = totalSlides - 1;
-            
-            slides.forEach(slide => slide.classList.remove('active'));
-            slides[currentSlide].classList.add('active');
-            
-            // Update dots
-            const dots = document.querySelectorAll('.carousel-dot');
-            dots.forEach(dot => dot.classList.remove('active'));
-            if (dots[currentSlide]) {
-                dots[currentSlide].classList.add('active');
-            }
-        }
-
-        // Change slide
-        function changeSlide(n) {
-            currentSlide += n;
-            showSlide(currentSlide);
-            resetAutoPlay();
-        }
-
-        // Go to specific slide
-        function goToSlide(n) {
-            currentSlide = n;
-            showSlide(currentSlide);
-            resetAutoPlay();
-        }
-
-        // Auto play
-        function startAutoPlay() {
-            autoPlayInterval = setInterval(() => {
-                currentSlide++;
-                showSlide(currentSlide);
-            }, 7000); // Change image every 7 seconds
-        }
-
-        // Reset auto play
-        function resetAutoPlay() {
-            clearInterval(autoPlayInterval);
-            startAutoPlay();
-        }
-
-        // Initialize
-        if (totalSlides > 0) {
-            createDots();
-            showSlide(0);
-            if (totalSlides > 1) {
-                startAutoPlay();
-            }
-        }
-
-        // Pause on hover
-        const carouselContainer = document.querySelector('.carousel-container');
-        carouselContainer.addEventListener('mouseenter', () => {
-            clearInterval(autoPlayInterval);
-        });
-        carouselContainer.addEventListener('mouseleave', () => {
-            if (totalSlides > 1) {
-                startAutoPlay();
+            if (menuToggle && dropdownMenu) {
+                menuToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('active');
+                    menuToggle.classList.toggle('active');
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!menuToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                        dropdownMenu.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                    }
+                });
+                
+                const dropdownItems = dropdownMenu.querySelectorAll('.dropdown-item');
+                dropdownItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        dropdownMenu.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                    });
+                });
             }
         });
+        // Tab switching
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
     </script>
 </body>
 </html>
