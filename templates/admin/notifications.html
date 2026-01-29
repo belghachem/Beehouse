@@ -1,0 +1,276 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Admin Notifications - BeeHouse{% endblock %}
+
+{% block extrastyle %}
+<style>
+    .notifications-container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+    }
+    
+    .notifications-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .notifications-header h1 {
+        margin: 0;
+        font-size: 32px;
+        font-weight: 600;
+    }
+    
+    .notifications-header p {
+        margin: 10px 0 0 0;
+        opacity: 0.9;
+        font-size: 16px;
+    }
+    
+    .notification-section {
+        margin-bottom: 30px;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+    
+    .section-header {
+        padding: 15px 20px;
+        font-size: 18px;
+        font-weight: 600;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .section-header.urgent {
+        background: #dc3545;
+    }
+    
+    .section-header.important {
+        background: #ffc107;
+        color: #333;
+    }
+    
+    .section-header.info {
+        background: #17a2b8;
+    }
+    
+    .notification-item {
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        transition: background 0.2s;
+    }
+    
+    .notification-item:last-child {
+        border-bottom: none;
+    }
+    
+    .notification-item:hover {
+        background: #f8f9fa;
+    }
+    
+    .notification-icon {
+        font-size: 32px;
+        flex-shrink: 0;
+    }
+    
+    .notification-content {
+        flex: 1;
+    }
+    
+    .notification-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin: 0 0 5px 0;
+    }
+    
+    .notification-description {
+        font-size: 14px;
+        color: #666;
+        margin: 0;
+    }
+    
+    .notification-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .notification-badge {
+        background: #e9ecef;
+        color: #495057;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+    
+    .btn-action {
+        padding: 8px 16px;
+        background: #417690;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 14px;
+        transition: background 0.2s;
+        white-space: nowrap;
+    }
+    
+    .btn-action:hover {
+        background: #2e5568;
+        color: white;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+    
+    .empty-state .icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+        opacity: 0.3;
+    }
+    
+    .empty-state h2 {
+        font-size: 24px;
+        margin: 0 0 10px 0;
+        color: #495057;
+    }
+    
+    .empty-state p {
+        font-size: 16px;
+        margin: 0;
+    }
+    
+    .back-button {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #417690;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    
+    .back-button:hover {
+        background: #2e5568;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="notifications-container">
+    <div class="notifications-header">
+        <h1>🔔 Admin Notifications</h1>
+        <p>
+            {% if has_notifications %}
+                You have {{ total_all }} notification(s) that need your attention
+            {% else %}
+                All caught up! No pending notifications.
+            {% endif %}
+        </p>
+    </div>
+    
+    <a href="{% url 'admin:index' %}" class="back-button">← Back to Dashboard</a>
+    
+    {% if has_notifications %}
+        
+        <!-- URGENT NOTIFICATIONS -->
+        {% if urgent_notifications %}
+        <div class="notification-section">
+            <div class="section-header urgent">
+                <span>🚨 URGENT TASKS ({{ total_urgent }})</span>
+                <span>Needs Immediate Action</span>
+            </div>
+            {% for notification in urgent_notifications %}
+            <div class="notification-item">
+                <div class="notification-icon">{{ notification.icon }}</div>
+                <div class="notification-content">
+                    <h3 class="notification-title">{{ notification.title }}</h3>
+                    <p class="notification-description">{{ notification.description }}</p>
+                </div>
+                <div class="notification-actions">
+                    <span class="notification-badge">{{ notification.count }}</span>
+                    <a href="{{ notification.link }}" class="btn-action">{{ notification.link_text }}</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- IMPORTANT NOTIFICATIONS -->
+        {% if important_notifications %}
+        <div class="notification-section">
+            <div class="section-header important">
+                <span>⚠️ IMPORTANT TASKS ({{ total_important }})</span>
+                <span>Handle Soon</span>
+            </div>
+            {% for notification in important_notifications %}
+            <div class="notification-item">
+                <div class="notification-icon">{{ notification.icon }}</div>
+                <div class="notification-content">
+                    <h3 class="notification-title">{{ notification.title }}</h3>
+                    <p class="notification-description">{{ notification.description }}</p>
+                </div>
+                <div class="notification-actions">
+                    <span class="notification-badge">{{ notification.count }}</span>
+                    <a href="{{ notification.link }}" class="btn-action">{{ notification.link_text }}</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- INFO NOTIFICATIONS -->
+        {% if info_notifications %}
+        <div class="notification-section">
+            <div class="section-header info">
+                <span>ℹ️ FOR YOUR INFO ({{ total_info }})</span>
+                <span>Review When Convenient</span>
+            </div>
+            {% for notification in info_notifications %}
+            <div class="notification-item">
+                <div class="notification-icon">{{ notification.icon }}</div>
+                <div class="notification-content">
+                    <h3 class="notification-title">{{ notification.title }}</h3>
+                    <p class="notification-description">{{ notification.description }}</p>
+                </div>
+                <div class="notification-actions">
+                    <span class="notification-badge">{{ notification.count }}</span>
+                    <a href="{{ notification.link }}" class="btn-action">{{ notification.link_text }}</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+    {% else %}
+        <!-- EMPTY STATE -->
+        <div class="notification-section">
+            <div class="empty-state">
+                <div class="icon">✅</div>
+                <h2>All Caught Up!</h2>
+                <p>You have no pending notifications at the moment.</p>
+                <p style="margin-top: 20px;">
+                    <a href="{% url 'admin:index' %}" class="btn-action">Go to Dashboard</a>
+                </p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
