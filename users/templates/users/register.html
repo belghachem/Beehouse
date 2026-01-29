@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,31 +8,60 @@
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
-    <link rel="stylesheet" href="{% static 'CSS/profile-page_stylesheet.css' %}">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'CSS/bee-house-shared.css' %}">
     <link rel="stylesheet" href="{% static 'CSS/register.css' %}">
     <link rel="stylesheet" href="{% static 'CSS/mobile.css' %}">
 </head>
 <body>
-    <div class="header">
-        <div class="logo"><img class="beelogo" src="{% static 'Images/BEEBLACK.png' %}"></div>
-        <section class="nav-bar">
-            <ol>
-                <li><a href="{% url 'home:home_page' %}"><button class="nav-bar-button">Home</button></a></li>
-                <li><a href="{% url 'products:product_page' %}"><button class="nav-bar-button">Products</button></a></li>
-                <li><a href="{% url 'contactus:contact' %}"><button class="nav-bar-button">Contact-us</button></a></li>
-            </ol>
-            <div class="profile">
-                <a href="{% url 'users:profile' %}">
-                    <img src="{% static 'Images/user_icon-profile.png' %}" alt="user-profile" class="user-profile">
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-bar" role="navigation">    
+            <div class="logo">
+                <a href="{% url 'home:home_page' %}" aria-label="Bee House Home">
+                    <img class="beelogo" src="{% static 'Images/BEEBLACK.png' %}" alt="Bee House Logo">
                 </a>
             </div>
-        </section>
-    </div>
+            
+            <div class="nav-right">
+                <!-- Hamburger Menu -->
+                <div class="hamburger-menu">
+                    <button class="hamburger-btn" aria-label="Menu" id="menuToggle">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="{% url 'home:home_page' %}" class="dropdown-item">Home</a>
+                        <a href="{% url 'products:product_page' %}" class="dropdown-item">Products</a>
+                        <a href="{% url 'contactus:contact' %}" class="dropdown-item">Contact Us</a>
+                    </div>
+                </div>
+                
+                <!-- Profile Icons -->
+                <div class="profile">
+                    <div class="cart-icon-container">
+                        <a href="{% url 'cart:view_cart' %}" aria-label="Shopping Cart">
+                            <img src="{% static 'Images/cart-icon.png' %}" alt="Shopping Cart" class="cart-icon">
+                        </a>
+                    </div>
+                    <a href="{% url 'users:profile' %}" aria-label="User Profile">
+                        <img src="{% static 'Images/user_icon-profile.png' %}" alt="User Profile" class="user-profile">
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
     <div class="divider"></div>
+
+    <!-- Register Container -->
     <div class="register-wrapper">
         <div class="register-container">
             <div class="register-header">
@@ -172,6 +201,37 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Hamburger menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            
+            if (menuToggle && dropdownMenu) {
+                menuToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('active');
+                    menuToggle.classList.toggle('active');
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!menuToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                        dropdownMenu.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                    }
+                });
+                
+                const dropdownItems = dropdownMenu.querySelectorAll('.dropdown-item');
+                dropdownItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        dropdownMenu.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                    });
+                });
+            }
+        });
+    </script>
     <script src="{% static 'JS/register.js' %}"></script>
 </body>
 </html>

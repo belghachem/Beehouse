@@ -1,45 +1,80 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Bee House</title>
-    <link rel="stylesheet" type="text/CSS" href="{% static 'CSS/profile-page_stylesheet.css' %}"/>
-    <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta name="description" content="User Profile - Bee House">
+    
+    <title>My Profile - Bee House</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/bee-house-shared.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/profile-stylesheet.css' %}"/>
     <link rel="stylesheet" href="{% static 'CSS/mobile.css' %}">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
 </head>
 <body>
-    <div class="header">
-        <div class="logo"><img class="beelogo" src="{% static 'Images/BEEBLACK.png' %}"></div>
-        <section class="nav-bar">
-            <ol>
-                <li><a href="{% url 'home:home_page' %}"><button class="nav-bar-button">Home</button></a></li>
-                <li><a href="{% url 'products:product_page' %}"><button class="nav-bar-button">Products</button></a></li>
-                <li><a href="{% url 'contactus:contact' %}"><button class="nav-bar-button">Contact-us</button></a></li>
-            </ol>
-            <div class="profile">
-                <a href="{% url 'users:profile' %}">
-                    <img src="{% static 'Images/user_icon-profile.png' %}" alt="user-profile" class="user-profile">
+    <!-- Header Section -->
+    <header class="header">
+        <nav class="nav-bar" role="navigation">    
+            <div class="logo">
+                <a href="{% url 'home:home_page' %}" aria-label="Bee House Home">
+                    <img class="beelogo" src="{% static 'Images/BEEBLACK.png' %}" alt="Bee House Logo">
                 </a>
             </div>
-        </section>
-    </div>
+            
+            <div class="nav-right">
+                <!-- Hamburger Menu -->
+                <div class="hamburger-menu">
+                    <button class="hamburger-btn" aria-label="Menu" id="menuToggle">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="{% url 'home:home_page' %}" class="dropdown-item">Home</a>
+                        <a href="{% url 'products:product_page' %}" class="dropdown-item">Products</a>
+                        <a href="{% url 'contactus:contact' %}" class="dropdown-item">Contact Us</a>
+                    </div>
+                </div>
+                
+                <!-- Profile Icons -->
+                <div class="profile">
+                    <div class="cart-icon-container">
+                        <a href="{% url 'cart:view_cart' %}" aria-label="Shopping Cart">
+                            <img src="{% static 'Images/cart-icon.png' %}" alt="Shopping Cart" class="cart-icon">
+                        </a>
+                    </div>
+                    <a href="{% url 'users:profile' %}" aria-label="User Profile">
+                        <img src="{% static 'Images/user_icon-profile.png' %}" alt="User Profile" class="user-profile">
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
     <div class="divider"></div>
 
     <!-- Dashboard Section -->
-    <section class="dashboard-section">
+    <main class="dashboard-section">
         <div class="dashboard-container">
+            <!-- Dashboard Header -->
             <div class="dashboard-header">
-                <h2>My Dashboard</h2>
-                <p>Welcome back, <span class="user-name">{{ user.get_full_name|default:user.username }}</span>!</p>
+                <h1>My Dashboard</h1>
+                <p>Welcome back, <span class="user-name">{{ user.get_full_name|default:user.username }}</span>! 🐝</p>
             </div>
             
             <div class="dashboard-content">
                 <!-- Sidebar -->
-                <div class="dashboard-sidebar">
+                <aside class="dashboard-sidebar">
                     <div class="user-profile-card">
                         <div class="profile-avatar">
                             {% if profile.profile_picture %}
@@ -47,84 +82,126 @@
                             {% else %}
                                 <img src="{% static 'Images/user_icon-profile.png' %}" alt="Profile" class="avatar-img" id="avatar-preview">
                             {% endif %}
-                            <button type="button" class="change-avatar-btn" onclick="document.getElementById('profile-pic-input').click()">Change Photo</button>
+                            <button type="button" class="change-avatar-btn" onclick="document.getElementById('profile-pic-input').click()">
+                                📷 Change Photo
+                            </button>
                         </div>
                         <h3 class="profile-name">{{ user.get_full_name|default:user.username }}</h3>
+                        <p class="profile-email">{{ user.email|default:"No email provided" }}</p>
                         <p class="profile-phone">{{ profile.phone|default:"+213 XXX XXX XXX" }}</p>
-                        <p class="profile-phone">*You have unsaved changes. Please click "Save Changes" to update your profile.<p>
+                        
+                        <div class="profile-status">
+                            <span class="status-badge">Active Member</span>
+                        </div>
                     </div>
                     
-                    <nav class="dashboard-nav">
+                    <nav class="dashboard-nav" aria-label="Dashboard Navigation">
                         <ul>
-                            <li><a href="#profile" class="nav-item">
-                                <span>👤</span> Profile Info
-                            </a></li>
-                            <li><a href="#orders" class="nav-item">
-                                <span>📦</span> My Orders
-                            </a></li>
-                            <li><a href="#wishlist" class="nav-item">
-                                <span>❤️</span> Wishlist
-                            </a></li>
-                            <li><a href="{% url 'users:logout' %}" class="nav-item logout">
-                                <span>🚪</span> Logout
-                            </a></li>
+                            <li>
+                                <a href="#profile" class="nav-item active" onclick="showSection('profile')">
+                                    <span class="nav-icon">👤</span> 
+                                    <span class="nav-text">Profile Info</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#orders" class="nav-item" onclick="showSection('orders')">
+                                    <span class="nav-icon">📦</span> 
+                                    <span class="nav-text">My Orders</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#wishlist" class="nav-item" onclick="showSection('wishlist')">
+                                    <span class="nav-icon">❤️</span> 
+                                    <span class="nav-text">Wishlist</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'users:logout' %}" class="nav-item logout">
+                                    <span class="nav-icon">🚪</span> 
+                                    <span class="nav-text">Logout</span>
+                                </a>
+                            </li>
                         </ul>
                     </nav>
-                </div>
+                </aside>
                 
                 <!-- Main Content -->
                 <div class="dashboard-main">
                     <!-- Stats Cards -->
                     <div class="dashboard-stats">
                         <div class="stat-card">
-                            <h3>Total Orders</h3>
-                            <p class="stat-number">{{ total_orders }}</p>
+                            <div class="stat-icon">📦</div>
+                            <div class="stat-info">
+                                <h3>Total Orders</h3>
+                                <p class="stat-number">{{ total_orders }}</p>
+                            </div>
                         </div>
                         <div class="stat-card">
-                            <h3>Pending Orders</h3>
-                            <p class="stat-number">{{ pending_orders }}</p>
+                            <div class="stat-icon">⏳</div>
+                            <div class="stat-info">
+                                <h3>Pending Orders</h3>
+                                <p class="stat-number">{{ pending_orders }}</p>
+                            </div>
                         </div>
                         <div class="stat-card">
-                            <h3>Total Spent</h3>
-                            <p class="stat-number">{{ total_spent|floatformat:0 }} DA</p>
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-info">
+                                <h3>Total Spent</h3>
+                                <p class="stat-number">{{ total_spent|floatformat:0 }} DZD</p>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Profile Form -->
-                    <div class="dashboard-section-content" id="profile">
-                        <h3>Profile Information</h3>
+                    <!-- Profile Form Section -->
+                    <div class="dashboard-section-content active" id="profile">
+                        <h2>📝 Profile Information</h2>
                         
                         {% if messages %}
                             {% for message in messages %}
-                                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                                <div class="alert alert-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
                             {% endfor %}
                         {% endif %}
+                        
                         <form class="profile-form" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
+                            
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label>First Name</label>
-                                    <input type="text" name="first_name" value="{{ user.first_name }}" required>
+                                    <label for="first_name">First Name *</label>
+                                    <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required>
                                 </div>
                                 <div class="form-group">
-                                    <label>Last Name</label>
-                                    <input type="text" name="last_name" value="{{ user.last_name }}" required>
+                                    <label for="last_name">Last Name *</label>
+                                    <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required>
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <label>Phone</label>
-                                <input type="tel" name="phone" value="{{ profile.phone }}">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" value="{{ profile.phone }}" placeholder="+213 XXX XXX XXX">
                             </div>
                             
                             <div class="form-group">
-                                <label>Address</label>
-                                <textarea rows="3" name="address">{{ profile.address }}</textarea>
+                                <label for="address">Address</label>
+                                <textarea id="address" name="address" rows="3" placeholder="Enter your full address">{{ profile.address }}</textarea>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="city">City</label>
+                                    <input type="text" id="city" name="city" value="{{ profile.city }}" placeholder="e.g., Oran">
+                                </div>
+                                <div class="form-group">
+                                    <label for="wilaya">Wilaya</label>
+                                    <input type="text" id="wilaya" name="wilaya" value="{{ profile.wilaya }}" placeholder="e.g., Oran">
+                                </div>
                             </div>
                             
                             <input type="file" name="profile_picture" id="profile-pic-input" style="display: none;" accept="image/*">
                             
-                            <button type="submit" class="save-btn" id="saveBtn">
+                            <button type="submit" class="save-btn">
                                 💾 Save Changes
                             </button>
                         </form>
@@ -132,42 +209,63 @@
 
                     <!-- Orders Section -->
                     <div class="dashboard-section-content" id="orders">
-                        <h3>My Orders</h3>
+                        <h2>📦 My Orders</h2>
+                        
                         <div class="orders-grid">
                             {% for order in recent_orders %}
                             <div class="order-card">
                                 <div class="order-header">
-                                    <span class="order-id">Order #{{ order.id }}</span>
-                                    <span class="order-status status-{{ order.status }}">{{ order.get_status_display }}</span>
+                                    <div class="order-info">
+                                        <span class="order-id">Order #{{ order.id }}</span>
+                                        <span class="order-date">{{ order.created_at|date:"M d, Y" }}</span>
+                                    </div>
+                                    <span class="order-status status-{{ order.status }}">
+                                        {{ order.get_status_display }}
+                                    </span>
                                 </div>
+                                
                                 <div class="order-details">
-                                    <div>
-                                        <p><strong>Date:</strong> {{ order.created_at|date:"M d, Y" }}</p>
-                                        <p><strong>Items:</strong> {{ order.items.count }} products</p>
+                                    <div class="order-detail-item">
+                                        <span class="detail-label">Items:</span>
+                                        <span class="detail-value">{{ order.items.count }} products</span>
                                     </div>
-                                    <div>
-                                        <p><strong>Total:</strong> {{ order.total_price|floatformat:0 }} DZD</p>
-                                        <p><strong>Payment:</strong> Cash on Delivery</p>
+                                    <div class="order-detail-item">
+                                        <span class="detail-label">Total:</span>
+                                        <span class="detail-value price">{{ order.total_price|floatformat:0 }} DZD</span>
+                                    </div>
+                                    <div class="order-detail-item">
+                                        <span class="detail-label">Payment:</span>
+                                        <span class="detail-value">Cash on Delivery</span>
                                     </div>
                                 </div>
+                                
                                 <div class="order-actions">
-                                    <a href="{% url 'orders:order_detail' order.id %}" class="order-btn btn-view">View Details</a>
-                                    <a href="{% url 'orders:download_invoice' order.id %}" class="order-btn btn-download">Download Invoice</a>
+                                    <a href="{% url 'orders:order_detail' order.id %}" class="order-btn btn-view">
+                                        👁️ View Details
+                                    </a>
+                                    <a href="{% url 'orders:download_invoice' order.id %}" class="order-btn btn-download">
+                                        📥 Invoice
+                                    </a>
                                 </div>
                             </div>
                             {% empty %}
-                            <p>No orders yet. <a href="{% url 'products:product_page' %}">Start shopping!</a></p>
+                            <div class="empty-state">
+                                <div class="empty-icon">📦</div>
+                                <h3>No Orders Yet</h3>
+                                <p>You haven't placed any orders yet.</p>
+                                <a href="{% url 'products:product_page' %}" class="shop-now-btn">Start Shopping 🍯</a>
+                            </div>
                             {% endfor %}
                         </div>
                     </div>
 
-                    <!-- Wishlist Section - FIXED IMAGE ERROR -->
+                    <!-- Wishlist Section -->
                     <div class="dashboard-section-content" id="wishlist">
-                        <h3>My Wishlist</h3>
+                        <h2>❤️ My Wishlist</h2>
+                        
                         <div class="wishlist-grid">
                             {% for item in wishlist_items %}
                             <div class="wishlist-item">
-                                <!-- FIXED: Check if picture exists before accessing .url -->
                                 {% if item.product.picture %}
                                     <img src="{{ item.product.picture.url }}" alt="{{ item.product.name }}" class="wishlist-img">
                                 {% else %}
@@ -176,49 +274,118 @@
                                 
                                 <div class="wishlist-info">
                                     <h4>{{ item.product.name }}</h4>
-                                    <p class="wishlist-price">{{ item.product.price|floatformat:0 }} DA</p>
+                                    <p class="wishlist-price">{{ item.product.price|floatformat:0 }} DZD</p>
+                                    <p class="wishlist-category">{{ item.product.category }}</p>
+                                    
                                     <div class="wishlist-actions">
                                         <form action="{% url 'cart:add_to_cart' item.product.id %}" method="POST" style="display: inline;">
                                             {% csrf_token %}
-                                            <button type="submit" class="wishlist-btn btn-cart">Add to Cart</button>
+                                            <button type="submit" class="wishlist-btn btn-cart">
+                                                🛒 Add to Cart
+                                            </button>
                                         </form>
                                         <a href="{% url 'users:remove_from_wishlist' item.id %}">
-                                            <button class="wishlist-btn btn-remove">Remove</button>
+                                            <button class="wishlist-btn btn-remove">
+                                                🗑️ Remove
+                                            </button>
                                         </a>
                                     </div>
                                 </div>
                             </div>
                             {% empty %}
-                            <p>Your wishlist is empty. <a href="{% url 'products:product_page' %}">Browse products!</a></p>
+                            <div class="empty-state">
+                                <div class="empty-icon">❤️</div>
+                                <h3>Your Wishlist is Empty</h3>
+                                <p>Save your favorite products here.</p>
+                                <a href="{% url 'products:product_page' %}" class="shop-now-btn">Browse Products 🍯</a>
+                            </div>
                             {% endfor %}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </main>
     
     <script>
+        // Hamburger menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            
+            if (menuToggle && dropdownMenu) {
+                menuToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('active');
+                    menuToggle.classList.toggle('active');
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!menuToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                        dropdownMenu.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                    }
+                });
+                
+                const dropdownItems = dropdownMenu.querySelectorAll('.dropdown-item');
+                dropdownItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        dropdownMenu.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                    });
+                });
+            }
+        });
+
         // Profile picture preview and upload
         const profilePicInput = document.getElementById('profile-pic-input');
         const avatarPreview = document.getElementById('avatar-preview');
-        const profileForm = document.querySelector('.profile-form');
 
-        profilePicInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                // Preview the image
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    avatarPreview.src = e.target.result;
+        if (profilePicInput && avatarPreview) {
+            profilePicInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        avatarPreview.src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
                 }
-                reader.readAsDataURL(file);
-                
-                // Auto-submit the form to save the profile picture
-                //profileForm.submit();
+            });
+        }
+
+        // Section switching
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.dashboard-section-content').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active from all nav items
+            document.querySelectorAll('.dashboard-nav .nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Add active to clicked nav item
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // Prevent default anchor behavior
+            event.preventDefault();
+        }
+
+        // Handle section from URL hash on page load
+        window.addEventListener('load', function() {
+            const hash = window.location.hash.substring(1);
+            if (hash && ['profile', 'orders', 'wishlist'].includes(hash)) {
+                showSection(hash);
             }
         });
     </script>
 </body>
-
 </html>

@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,37 +8,45 @@
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{% static 'Images/BEEBLACK.png' %}" />
-    <link rel="stylesheet" href="{% static 'CSS/profile-page_stylesheet.css' %}">
-    <link rel="stylesheet" href="{% static 'CSS/register.css' %}">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'CSS/bee-house-shared.css' %}">
+    <link rel="stylesheet" href="{% static 'CSS/login.css' %}">
     <link rel="stylesheet" href="{% static 'CSS/mobile.css' %}">
     
     <style>
         .verify-wrapper {
-            min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #FDB913 0%, #FFA500 100%);
+            align-items: center;
+            min-height: calc(100vh - 150px);
+            padding: 2rem 1rem;
         }
 
         .verify-container {
-            background: white;
+            background: #fff;
             border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(139, 115, 85, 0.3);
+            max-width: 500px;
             width: 100%;
+            overflow: hidden;
+        }
+
+        .verify-header {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            padding: 3rem 2.5rem;
             text-align: center;
+            color: #fff;
         }
 
         .verify-icon {
-            font-size: 80px;
-            margin-bottom: 20px;
+            font-size: 4rem;
+            margin-bottom: 1rem;
             animation: float 3s ease-in-out infinite;
         }
 
@@ -47,42 +55,46 @@
             50% { transform: translateY(-10px); }
         }
 
-        .verify-container h1 {
-            font-size: 28px;
+        .verify-header h1 {
+            font-size: 2rem;
             font-weight: 700;
-            color: #333;
-            margin-bottom: 10px;
+            margin-bottom: 0.5rem;
         }
 
-        .verify-container > p {
-            color: #666;
-            font-size: 16px;
-            margin-bottom: 30px;
+        .verify-header p {
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .verify-body {
+            padding: 2.5rem;
         }
 
         .code-input-group {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin: 30px 0;
+            gap: 12px;
+            margin: 2rem 0;
         }
 
         .code-input {
-            width: 50px;
-            height: 60px;
-            font-size: 24px;
+            width: 55px;
+            height: 65px;
+            font-size: 1.8rem;
             font-weight: 700;
             text-align: center;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #e5e7eb;
             border-radius: 12px;
             transition: all 0.3s ease;
             font-family: 'Epilogue', sans-serif;
+            background: #f9fafb;
         }
 
         .code-input:focus {
-            border-color: #FDB913;
+            border-color: #d97706;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(253, 185, 19, 0.1);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1);
             transform: scale(1.05);
         }
 
@@ -94,22 +106,22 @@
 
         .btn-verify {
             width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #FDB913 0%, #FFA500 100%);
-            color: white;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #000;
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 20px;
-            font-family: 'Epilogue', sans-serif;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+            margin-top: 1rem;
         }
 
         .btn-verify:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(253, 185, 19, 0.3);
+            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.4);
         }
 
         .btn-verify:active {
@@ -117,153 +129,247 @@
         }
 
         .resend-link {
-            margin-top: 20px;
+            text-align: center;
+            margin-top: 1.5rem;
             color: #666;
-            font-size: 14px;
+            font-size: 0.95rem;
         }
 
         .resend-link a {
-            color: #FDB913;
+            color: #d97706;
             font-weight: 600;
             text-decoration: none;
             transition: color 0.3s ease;
         }
 
         .resend-link a:hover {
-            color: #FFA500;
+            color: #f59e0b;
+            text-decoration: underline;
         }
 
         .alert {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
         }
 
         .alert-error {
-            background-color: #fee;
-            color: #c33;
-            border: 1px solid #fcc;
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #dc2626;
         }
 
         .alert-success {
-            background-color: #efe;
-            color: #3c3;
-            border: 1px solid #cfc;
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
         }
 
         @media (max-width: 768px) {
-            .verify-container {
-                padding: 30px 20px;
+            .verify-header {
+                padding: 2.5rem 2rem;
             }
 
-            .verify-container h1 {
-                font-size: 24px;
+            .verify-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .verify-body {
+                padding: 2rem 1.5rem;
             }
 
             .code-input {
-                width: 45px;
-                height: 55px;
-                font-size: 20px;
+                width: 48px;
+                height: 58px;
+                font-size: 1.5rem;
+            }
+
+            .code-input-group {
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .code-input {
+                width: 42px;
+                height: 52px;
+                font-size: 1.3rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-bar" role="navigation">    
+            <div class="logo">
+                <a href="{% url 'home:home_page' %}" aria-label="Bee House Home">
+                    <img class="beelogo" src="{% static 'Images/BEEBLACK.png' %}" alt="Bee House Logo">
+                </a>
+            </div>
+            
+            <div class="nav-right">
+                <!-- Hamburger Menu -->
+                <div class="hamburger-menu">
+                    <button class="hamburger-btn" aria-label="Menu" id="menuToggle">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="{% url 'home:home_page' %}" class="dropdown-item">Home</a>
+                        <a href="{% url 'products:product_page' %}" class="dropdown-item">Products</a>
+                        <a href="{% url 'contactus:contact' %}" class="dropdown-item">Contact Us</a>
+                    </div>
+                </div>
+                
+                <!-- Profile Icons -->
+                <div class="profile">
+                    <div class="cart-icon-container">
+                        <a href="{% url 'cart:view_cart' %}" aria-label="Shopping Cart">
+                            <img src="{% static 'Images/cart-icon.png' %}" alt="Shopping Cart" class="cart-icon">
+                        </a>
+                    </div>
+                    <a href="{% url 'users:profile' %}" aria-label="User Profile">
+                        <img src="{% static 'Images/user_icon-profile.png' %}" alt="User Profile" class="user-profile">
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="divider"></div>
+
+    <!-- Verify Container -->
     <div class="verify-wrapper">
         <div class="verify-container">
-            <div class="verify-icon">📱</div>
-            <h1>Verify Your Phone</h1>
-            <p>We sent a 6-digit code to your mobile device</p>
+            <div class="verify-header">
+                <div class="verify-icon">📱</div>
+                <h1>Verify Your Phone</h1>
+                <p>We sent a 6-digit code to your mobile device</p>
+            </div>
             
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {{ message }}
+            <div class="verify-body">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" id="verifyForm">
+                    {% csrf_token %}
+                    
+                    <div class="code-input-group">
+                        <input type="text" class="code-input" maxlength="1" data-index="0" autocomplete="off">
+                        <input type="text" class="code-input" maxlength="1" data-index="1" autocomplete="off">
+                        <input type="text" class="code-input" maxlength="1" data-index="2" autocomplete="off">
+                        <input type="text" class="code-input" maxlength="1" data-index="3" autocomplete="off">
+                        <input type="text" class="code-input" maxlength="1" data-index="4" autocomplete="off">
+                        <input type="text" class="code-input" maxlength="1" data-index="5" autocomplete="off">
                     </div>
-                {% endfor %}
-            {% endif %}
 
-            <form method="POST" id="verifyForm">
-                {% csrf_token %}
-                
-                <div class="code-input-group">
-                    <input type="text" class="code-input" maxlength="1" data-index="0" autocomplete="off">
-                    <input type="text" class="code-input" maxlength="1" data-index="1" autocomplete="off">
-                    <input type="text" class="code-input" maxlength="1" data-index="2" autocomplete="off">
-                    <input type="text" class="code-input" maxlength="1" data-index="3" autocomplete="off">
-                    <input type="text" class="code-input" maxlength="1" data-index="4" autocomplete="off">
-                    <input type="text" class="code-input" maxlength="1" data-index="5" autocomplete="off">
+                    <input type="text" name="code" class="hidden-input" id="hiddenCode" required>
+                    
+                    <button type="submit" class="btn-verify">Verify Account</button>
+                </form>
+
+                <div class="resend-link">
+                    Didn't receive the code? <a href="#">Resend Code</a>
                 </div>
-
-                <input type="text" name="code" class="hidden-input" id="hiddenCode" required>
-                
-                <button type="submit" class="btn-verify">Verify Account</button>
-            </form>
-
-            <div class="resend-link">
-                Didn't receive the code? <a href="#">Resend Code</a>
             </div>
         </div>
     </div>
 
     <script>
-        const inputs = document.querySelectorAll('.code-input');
-        const hiddenInput = document.getElementById('hiddenCode');
-        const form = document.getElementById('verifyForm');
-
-        inputs.forEach((input, index) => {
-            input.addEventListener('input', (e) => {
-                const value = e.target.value;
+        // Hamburger menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            
+            if (menuToggle && dropdownMenu) {
+                menuToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('active');
+                    menuToggle.classList.toggle('active');
+                });
                 
-                if (value.length === 1 && index < inputs.length - 1) {
-                    inputs[index + 1].focus();
-                }
-                
-                updateHiddenInput();
-            });
-
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                    inputs[index - 1].focus();
-                }
-            });
-
-            input.addEventListener('paste', (e) => {
-                e.preventDefault();
-                const pastedData = e.clipboardData.getData('text').slice(0, 6);
-                
-                pastedData.split('').forEach((char, i) => {
-                    if (inputs[i]) {
-                        inputs[i].value = char;
+                document.addEventListener('click', function(e) {
+                    if (!menuToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                        dropdownMenu.classList.remove('active');
+                        menuToggle.classList.remove('active');
                     }
                 });
                 
-                updateHiddenInput();
-                
-                if (pastedData.length === 6) {
-                    inputs[5].focus();
+                const dropdownItems = dropdownMenu.querySelectorAll('.dropdown-item');
+                dropdownItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        dropdownMenu.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                    });
+                });
+            }
+
+            // Verification code input handling
+            const inputs = document.querySelectorAll('.code-input');
+            const hiddenInput = document.getElementById('hiddenCode');
+            const form = document.getElementById('verifyForm');
+
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    const value = e.target.value;
+                    
+                    if (value.length === 1 && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                    
+                    updateHiddenInput();
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+
+                input.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    const pastedData = e.clipboardData.getData('text').slice(0, 6);
+                    
+                    pastedData.split('').forEach((char, i) => {
+                        if (inputs[i]) {
+                            inputs[i].value = char;
+                        }
+                    });
+                    
+                    updateHiddenInput();
+                    
+                    if (pastedData.length === 6) {
+                        inputs[5].focus();
+                    }
+                });
+            });
+
+            function updateHiddenInput() {
+                let code = '';
+                inputs.forEach(input => {
+                    code += input.value;
+                });
+                hiddenInput.value = code;
+            }
+
+            form.addEventListener('submit', (e) => {
+                if (hiddenInput.value.length !== 6) {
+                    e.preventDefault();
+                    alert('Please enter all 6 digits');
                 }
             });
+
+            // Auto-focus first input
+            inputs[0].focus();
         });
-
-        function updateHiddenInput() {
-            let code = '';
-            inputs.forEach(input => {
-                code += input.value;
-            });
-            hiddenInput.value = code;
-        }
-
-        form.addEventListener('submit', (e) => {
-            if (hiddenInput.value.length !== 6) {
-                e.preventDefault();
-                alert('Please enter all 6 digits');
-            }
-        });
-
-        // Auto-focus first input
-        inputs[0].focus();
     </script>
 </body>
 </html>
