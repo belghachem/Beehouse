@@ -7,7 +7,7 @@ from decouple import config
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = config('SECRET_KEY')
-DEBUG = True
+DEBUG = False
 
 LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'home:home_page'
@@ -166,5 +166,6 @@ cloudinary.config(
     api_secret=config('CLOUDINARY_API_SECRET'),
     secure=True
 )
+
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
