@@ -19,7 +19,7 @@ class VisitorTrackingMiddleware:
         session_key = request.session.session_key
         
         # Skip tracking for admin, static, and media files
-        skip_paths = ['/znd/', '/static/', '/media/']
+        skip_paths = ['/znd/', '/static/', '/media/','/users/api/sms/pending/','/favicon.ico','/notifications/']
         if not any(page_visited.startswith(path) for path in skip_paths):
             try:
                 # Create visitor record
@@ -46,3 +46,4 @@ class VisitorTrackingMiddleware:
         else:
             ip = request.META.get('REMOTE_ADDR', '0.0.0.0')
         return ip
+
