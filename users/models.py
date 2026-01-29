@@ -8,9 +8,8 @@ class UserProfile(models.Model):
     phone = models.CharField(max_length=20, blank=True)
     address = models.TextField(blank=True)
     city = models.CharField(max_length=100, blank=True)
+    wilaya = models.CharField(max_length=100, blank=True)
     postal_code = models.CharField(max_length=20, blank=True, null=True)
-    profile_picture = CloudinaryField('profile_picture', blank=True, null=True)
-    
     def __str__(self):
         return f"{self.user.username}'s Profile"
     

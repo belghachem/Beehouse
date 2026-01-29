@@ -11,6 +11,7 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" type="text/css" href="{% static 'CSS/bee-house-shared.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'CSS/profile-stylesheet.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/wilaya-dropdown.css' %}"/>
     <link rel="stylesheet" href="{% static 'CSS/mobile.css' %}">
     
     <!-- Fonts -->
@@ -77,17 +78,10 @@
                 <aside class="dashboard-sidebar">
                     <div class="user-profile-card">
                         <div class="profile-avatar">
-                            {% if profile.profile_picture %}
-                                <img src="{{ profile.profile_picture.url }}" alt="Profile" class="avatar-img" id="avatar-preview">
-                            {% else %}
                                 <img src="{% static 'Images/user_icon-profile.png' %}" alt="Profile" class="avatar-img" id="avatar-preview">
-                            {% endif %}
-                            <button type="button" class="change-avatar-btn" onclick="document.getElementById('profile-pic-input').click()">
-                                📷 Change Photo
-                            </button>
                         </div>
                         <h3 class="profile-name">{{ user.get_full_name|default:user.username }}</h3>
-                        <p class="profile-email">{{ user.email|default:"No email provided" }}</p>
+                        <p class="profile-email">{{ user.username}}</p>
                         <p class="profile-phone">{{ profile.phone|default:"+213 XXX XXX XXX" }}</p>
                         
                         <div class="profile-status">
@@ -195,11 +189,14 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="wilaya">Wilaya</label>
-                                    <input type="text" id="wilaya" name="wilaya" value="{{ profile.wilaya }}" placeholder="e.g., Oran">
+                                    <input type="text" 
+                                           id="wilaya" 
+                                           name="wilaya" 
+                                           value="{{ profile.wilaya }}" 
+                                           required>
+                                    <span class="wilaya-helper-text">Type to search or click to select</span>
                                 </div>
                             </div>
-                            
-                            <input type="file" name="profile_picture" id="profile-pic-input" style="display: none;" accept="image/*">
                             
                             <button type="submit" class="save-btn">
                                 💾 Save Changes
@@ -306,7 +303,7 @@
             </div>
         </div>
     </main>
-    
+    <script src="{% static 'JS/wilaya-dropdown.js' %}"></script>
     <script>
         // Hamburger menu toggle
         document.addEventListener('DOMContentLoaded', function() {

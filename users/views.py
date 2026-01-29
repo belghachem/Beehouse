@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import UserProfile, Wishlist, SMSMessage  # ADD SMSMessage here
+from .models import UserProfile, Wishlist, SMSMessage  
 from products.models import Product
 from orders.models import Order
 from django.contrib.auth.models import User
@@ -40,7 +40,6 @@ def send_verification_sms(phone, code):
         logger.info(f"Creating SMS for: {phone}")
         
         # Create SMS message in database
-        # Your Android phone will fetch and send it
         sms = SMSMessage.objects.create(
             phone_number=phone,
             message=f"Your Bee House verification code is: {code} 🐝",
@@ -54,7 +53,6 @@ def send_verification_sms(phone, code):
         logger.error(f"SMS Error: {str(e)}")
         raise e
 
-# Keep all your other functions exactly the same
 def verify(request):
     reg_data = request.session.get('reg_data')
     if not reg_data:
@@ -171,20 +169,25 @@ def profile(request):
     wishlist_items = Wishlist.objects.filter(user=request.user).select_related('product')
     
     if request.method == 'POST':
+        # Update user fields
         user = request.user
-        user.first_name = request.POST.get('first_name')
-        user.last_name = request.POST.get('last_name')
+        user.first_name = request.POST.get('first_name', '').strip()
+        user.last_name = request.POST.get('last_name', '').strip()
         user.save()
+        profile.phone = request.POST.get('phone', '').strip()
+        profile.address = request.POST.get('address', '').strip()
+        profile.city = request.POST.get('city', '').strip()
+        profile.wilaya = request.POST.get('wilaya', '').strip()
         
-        profile.phone = request.POST.get('phone')
-        profile.address = request.POST.get('address')
-        
+        # Handle profile picture if uploaded
         if request.FILES.get('profile_picture'):
             profile.profile_picture = request.FILES['profile_picture']
         
         profile.save()
         
-        messages.success(request, 'Profile updated successfully!')
+        logger.info(f"Profile updated for user {user.username}: phone={profile.phone}, city={profile.city}, wilaya={profile.wilaya}")
+        
+        messages.success(request, 'Profile updated successfully! ✅')
         return redirect('users:profile')
     
     context = {
