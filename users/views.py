@@ -14,6 +14,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
+from urllib.parse import urlparse
 
 logger = logging.getLogger(__name__)
 
@@ -141,7 +142,28 @@ def user_login(request):
             login(request, user)
             messages.success(request, f'Welcome back, {user.first_name}!')
             
-            next_page = request.GET.get('next', 'home:home_page')
+            # Try multiple sources for redirect URL in priority order:
+            # 1. 'next' parameter from URL (from @login_required decorator)
+            # 2. 'next' from POST data (from login form hidden field)
+            # 3. Referer header (page user came from)
+            # 4. Default to home page
+            next_page = request.GET.get('next') or request.POST.get('next')
+            
+            if not next_page:
+                # Get the referer (previous page)
+                referer = request.META.get('HTTP_REFERER', '')
+                # Only use referer if it's from our site and not the login page itself
+                if referer and '/login' not in referer and request.get_host() in referer:
+                    # Extract the path from the full URL
+                    parsed = urlparse(referer)
+                    next_page = parsed.path
+                else:
+                    next_page = 'home:home_page'
+            
+            # Security: ensure next_page doesn't redirect to external sites
+            if next_page and (next_page.startswith('http://') or next_page.startswith('https://')):
+                next_page = 'home:home_page'
+            
             return redirect(next_page)
         else:
             messages.error(request, 'Invalid username or password!')

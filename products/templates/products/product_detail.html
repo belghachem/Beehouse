@@ -90,24 +90,47 @@
                         </div>
                     {% endif %}
                     
-                    <!-- Additional product images can be added here -->
+                    {% if product.picture_2 %}
+                        <div class="carousel-slide">
+                            <img src="{{ product.picture_2.url }}" alt="{{ product.name }} - Image 2">
+                        </div>
+                    {% endif %}
+                    
+                    {% if product.picture_3 %}
+                        <div class="carousel-slide">
+                            <img src="{{ product.picture_3.url }}" alt="{{ product.name }} - Image 3">
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Navigation Arrows -->
+                    <button class="carousel-arrow carousel-prev" onclick="changeSlide(-1)" aria-label="Previous image">
+                        ‹
+                    </button>
+                    <button class="carousel-arrow carousel-next" onclick="changeSlide(1)" aria-label="Next image">
+                        ›
+                    </button>
+                    
+                    <!-- Carousel Dots -->
                     <div class="carousel-controls">
-                        <span class="carousel-dot active" data-slide="0"></span>
+                        {% if product.picture %}
+                            <span class="carousel-dot active" onclick="goToSlide(0)" data-slide="0"></span>
+                        {% endif %}
+                        {% if product.picture_2 %}
+                            <span class="carousel-dot" onclick="goToSlide(1)" data-slide="1"></span>
+                        {% endif %}
+                        {% if product.picture_3 %}
+                            <span class="carousel-dot" onclick="goToSlide(2)" data-slide="2"></span>
+                        {% endif %}
                     </div>
                 </div>
                 
                 <!-- Wishlist Button -->
-                {% if user.is_authenticated %}
-                        <a href="{% url 'users:add_to_wishlist' product.id %}" class="btn-wishlist">
-                    <button class="wishlist-btn" aria-label="Add to wishlist">
-                            ❤️ Wishlist
+                <form action="{% url 'users:add_to_wishlist' product.id %}" method="POST" id="wishlistForm">
+                    {% csrf_token %}
+                    <button type="submit" class="wishlist-btn" aria-label="Add to wishlist">
+                            ❤️ Add to Wishlist
                     </button>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'users:login' %}" class="btn-wishlist">
-                            ❤️ Wishlist
-                        </a>
-                    {% endif %}
+                </form>
             </div>
 
             <!-- Product Info Section -->
@@ -139,7 +162,7 @@
                         </button>
                     </form>
                     <a href="{% url 'products:product_page' %}" class="btn-continue">
-                    ← Continue Shopping
+                        ← Continue Shopping
                     </a>
                 </div>
                 
@@ -266,6 +289,63 @@
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
         }
+
+        // ==================== CAROUSEL FUNCTIONALITY ====================
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.carousel-dot');
+        const totalSlides = slides.length;
+
+        // Only show arrows if there are multiple images
+        if (totalSlides > 1) {
+            document.querySelector('.carousel-prev').style.display = 'flex';
+            document.querySelector('.carousel-next').style.display = 'flex';
+        } else {
+            const prevBtn = document.querySelector('.carousel-prev');
+            const nextBtn = document.querySelector('.carousel-next');
+            if (prevBtn) prevBtn.style.display = 'none';
+            if (nextBtn) nextBtn.style.display = 'none';
+        }
+
+        function showSlide(index) {
+            // Hide all slides
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Remove active from all dots
+            dots.forEach(dot => {
+                dot.classList.remove('active');
+            });
+            
+            // Handle wrap around
+            if (index >= totalSlides) {
+                currentSlide = 0;
+            } else if (index < 0) {
+                currentSlide = totalSlides - 1;
+            } else {
+                currentSlide = index;
+            }
+            
+            // Show current slide
+            slides[currentSlide].classList.add('active');
+            if (dots[currentSlide]) {
+                dots[currentSlide].classList.add('active');
+            }
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+        }
+
+        // Auto-play carousel
+        setInterval(() => {
+            changeSlide(1);
+        }, 8500); // Change image every 8.5 seconds
     </script>
 </body>
 </html>
