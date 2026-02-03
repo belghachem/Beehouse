@@ -316,7 +316,6 @@ def reset_password(request):
     return render(request, 'users/reset_password.html')
 
 
-# ADD THESE NEW API VIEWS FOR ANDROID APP
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -392,4 +391,5 @@ def delete_sms(request):
         return JsonResponse({
             'status': 'error', 
             'message': str(e)
+
         }, status=400)
