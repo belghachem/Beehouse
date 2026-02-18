@@ -34,7 +34,6 @@ pipenv==2025.0.4
 platformdirs==4.5.0
 pluggy==1.6.0
 propcache==0.4.1
-psycopg2==2.9.11
 psycopg2-binary==2.9.11
 pyee==13.0.0
 Pygments==2.19.2
@@ -60,3 +59,4 @@ virtualenv==20.35.4
 waitress==3.0.2
 whitenoise==6.11.0
 yarl==1.22.0
+
