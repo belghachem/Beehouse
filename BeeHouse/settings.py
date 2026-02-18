@@ -24,6 +24,7 @@ DATABASES = {
 
 # Application definition
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -169,3 +170,4 @@ cloudinary.config(
 
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
