@@ -1,12 +1,12 @@
 {
   "version": 2,
   "builds": [{
-    "src": "BeeHouse/wsgi.py",
+    "src": "BeeHouse/asgi.py",
     "use": "@vercel/python",
     "config": { "maxLambdaSize": "15mb", "runtime": "python3.12" }
   }],
   "routes": [
     { "src": "/static/(.*)", "dest": "/static/$1" },
-    { "src": "/(.*)", "dest": "BeeHouse/wsgi.py" }
+    { "src": "/(.*)", "dest": "BeeHouse/asgi.py" }
   ]
 }
