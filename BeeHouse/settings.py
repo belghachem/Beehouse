@@ -7,7 +7,7 @@ from decouple import config
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = config('SECRET_KEY')
-DEBUG = False
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'home:home_page'
@@ -114,6 +114,7 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     
     CSRF_TRUSTED_ORIGINS = [
+        'https://*.vercel.app',
         'https://beehouse-0s4k.onrender.com',
         'https://www.beehouse-0s4k.onrender.com',
     ]
