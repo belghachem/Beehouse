@@ -8,5 +8,4 @@
     { "src": "/static/(.*)", "dest": "/static/$1" },
     { "src": "/(.*)", "dest": "BeeHouse/wsgi.py" }
   ],
-  "buildCommand": "bash build.sh"
 }
