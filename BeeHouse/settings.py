@@ -13,7 +13,7 @@ LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'home:home_page'
 LOGOUT_REDIRECT_URL = 'home:home_page'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = '*'
 
 DATABASES = {
     'default': dj_database_url.config(
