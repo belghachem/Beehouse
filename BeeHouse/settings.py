@@ -13,7 +13,7 @@ LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'home:home_page'
 LOGOUT_REDIRECT_URL = 'home:home_page'
 
-ALLOWED_HOSTS = '*'
+ALLOWED_HOSTS = 'beehouse-3npjdnnn.b4a.run'
 
 DATABASES = {
     'default': dj_database_url.config(
